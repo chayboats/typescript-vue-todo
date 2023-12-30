@@ -1,21 +1,48 @@
+<template>
+  <h1>Todo App</h1>
+  <form @submit.prevent="createTask(formData.description, formData.priority)">
+    <input v-model="formData.description"/>
+    <select v-model="formData.priority">
+      <option :value=Priority.LOW>{{ Priority.LOW }}</option>
+      <option :value=Priority.MEDIUM>{{ Priority.MEDIUM }}</option>
+      <option :value=Priority.HIGH>{{ Priority.HIGH }}</option>
+    </select>
+    <button>Add</button>
+  </form>
+  <div>
+    <ul v-for="task in tasks" :key="task.id">
+      <li><span>{{ task.description }} - {{ task.priority }}</span></li>
+    </ul>
+  </div>
+
+</template>
+
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+import { useTask, Priority } from '@/assets/task'
+import { ref } from 'vue';
+const {createTask, removeTask, tasks} = useTask() 
+
+interface FormData {
+  description: string,
+  priority: Priority
+}
+// Come back to this
+const defaultFormData:FormData = {description: '', priority: Priority.MEDIUM}
+
+const formData = ref<FormData>({
+  description: '',
+  priority: Priority.MEDIUM
+}) 
+
+function submitForm() {
+  createTask(formData.value.description, formData.value.priority)
+
+}
+
+
 </script>
 
-<template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
-</template>
 
 <style scoped>
 header {
