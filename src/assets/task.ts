@@ -1,5 +1,5 @@
 import { ref } from "vue";
-import generateId from "@/utils/UUID";
+import generateId from "@/utils/uuid";
 
 export interface Task {
   description: string;
@@ -14,15 +14,13 @@ export enum Priority {
   HIGH = 'High'
 }
 
-const uuid = generateId()
-
 export function useTask(){
   const tasks = ref <Task[]>([])
 
   function createTask(description: Task['description'], priority: Task['priority']) {
     const task = {
       description: description,
-      id: uuid,
+      id: generateId(),
       priority: priority,
       completed: false
     }
@@ -31,7 +29,7 @@ export function useTask(){
   }
 
   function removeTask(id: Task['id']) {
-    tasks.value.filter((task) => !task.id)
+    tasks.value = tasks.value.filter((task) => task.id != id)
   }
 
   return {
