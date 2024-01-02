@@ -20,17 +20,19 @@
 </template>
 
 <script setup lang="ts">
-import { useTask, Priority } from '@/assets/task'
+import useTask, { Priority } from '@/use/useTask'
 import { ref } from 'vue'
-const { createTask, removeTask, tasks } = useTask()
 
 interface FormData {
   description: string
   priority: Priority
 }
+
 const defaultFormData: FormData = { description: '', priority: Priority.MEDIUM }
 
 const formData = ref<FormData>({ ...defaultFormData })
+
+const { createTask, removeTask, tasks } = useTask()
 
 function submitForm() {
   createTask(formData.value.description, formData.value.priority)
@@ -80,3 +82,4 @@ li span:nth-of-type(2):hover {
   }
 }
 </style>
+@/use/task

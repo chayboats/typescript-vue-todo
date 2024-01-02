@@ -14,7 +14,7 @@ export enum Priority {
   HIGH = 'High'
 }
 
-export function useTask(){
+export default function useTask(){
   const tasks = ref <Task[]>([])
 
   function createTask(description: Task['description'], priority: Task['priority']) {
