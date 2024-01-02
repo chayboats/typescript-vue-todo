@@ -1,4 +1,4 @@
-import { ref } from "vue";
+import { compile, ref } from "vue";
 import generateId from "@/utils/uuid";
 
 export interface Task {
@@ -32,9 +32,18 @@ export default function useTask(){
     tasks.value = tasks.value.filter((task) => task.id != id)
   }
 
+  function toggleCompleted(id: Task['id']) {
+    tasks.value.map((task) => {
+      if (task.id == id) {
+        task.completed = !task.completed
+      }
+    })
+  }
+
   return {
     createTask,
     removeTask, 
+    toggleCompleted,
     tasks
   }
 }
