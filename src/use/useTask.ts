@@ -32,6 +32,15 @@ export default function useTask(){
     tasks.value = tasks.value.filter((task) => task.id != id)
   }
 
+  function updateTask(id: Task['id'], description: Task['description'], priority: Task['priority']) { 
+    tasks.value.filter((task) => {
+      if (task.id == id) {
+        task.description = description
+        task.priority = priority
+      }
+    })
+  }
+  
   function toggleCompleted(id: Task['id']) {
     tasks.value.map((task) => {
       if (task.id == id) {
@@ -44,6 +53,7 @@ export default function useTask(){
     createTask,
     removeTask, 
     toggleCompleted,
+    updateTask,
     tasks
   }
 }

@@ -1,32 +1,38 @@
 <template>
   <h1>Todo App</h1>
   <form @submit.prevent="submitForm">
-    <input v-model="formData.description" />
+    <input required type="text" v-model="formData.description" />
     <select v-model="formData.priority">
       <option :value="Priority.LOW">{{ Priority.LOW }}</option>
       <option :value="Priority.MEDIUM">{{ Priority.MEDIUM }}</option>
       <option :value="Priority.HIGH">{{ Priority.HIGH }}</option>
     </select>
-    <button>Add</button>
+    <button type="submit">Add</button>
   </form>
   <div>
     <ul v-for="task in tasks" :key="task.id">
       <li :class="task.completed && 'completed'">
         <span @click="toggleCompleted(task.id)">{{ task.description }} - {{ task.priority }}</span>
-        <span @click="enterEditMode(task)" class="edit">Edit</span>
+        <span @click="enterEditMode(task.id)" class="edit">Edit</span>
         <span @click="removeTask(task.id)" class="remove">X</span>
       </li>
     </ul>
   </div>
-  <form v-if="editMode">
-    <h2>Update Task</h2>
-    <input v-model="selectedTask?.description" />
-    <select v-model="selectedTask?.priority">
-      <option :value="Priority.LOW">{{ Priority.LOW }}</option>
-      <option :value="Priority.MEDIUM">{{ Priority.MEDIUM }}</option>
-      <option :value="Priority.HIGH">{{ Priority.HIGH }}</option>
-    </select>
-  </form>
+  <div v-if="editMode" class="edit-mode">
+    <form @submit.prevent="updateAndExitEditMode">
+      <h2>Update Task</h2>
+      <input required type="text" v-model="editFormData.description" />
+      <select v-model="editFormData.priority">
+        <option :value="Priority.LOW">{{ Priority.LOW }}</option>
+        <option :value="Priority.MEDIUM">{{ Priority.MEDIUM }}</option>
+        <option :value="Priority.HIGH">{{ Priority.HIGH }}</option>
+      </select>
+      <div class="buttons">
+        <button @click="exitEditMode">Cancel</button>
+        <button type="submit">Update</button>
+      </div>
+    </form>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -42,22 +48,42 @@ const defaultFormData: FormData = { description: '', priority: Priority.MEDIUM }
 
 const formData = ref<FormData>({ ...defaultFormData })
 
-const selectedTask = ref<Task | undefined>({})
+const editFormData = ref<FormData>({ ...defaultFormData })
+
+const selectedId = ref<Task['id']>('')
 
 const editMode = ref(false)
 
-const { createTask, removeTask, toggleCompleted, tasks } = useTask()
+const { createTask, removeTask, toggleCompleted, updateTask, tasks } = useTask()
 
 function submitForm() {
   createTask(formData.value.description, formData.value.priority)
   Object.assign(formData.value, { ...defaultFormData })
 }
 
-function enterEditMode(task: Task) {
-  selectedTask.value = task
-  editMode.value = true
+function exitEditMode() {
+  editMode.value = false
 }
 
+function enterEditMode(id: Task['id']) {
+  editMode.value = true
+  selectedId.value = id
+
+  setEditFormData(id)
+}
+
+function setEditFormData(id: Task['id']) {
+  tasks.value.filter((task) => {
+    if (task.id == id) {
+      editFormData.value.description = task.description
+      editFormData.value.priority = task.priority
+    }
+  })
+}
+function updateAndExitEditMode() {
+  updateTask(selectedId.value, editFormData.value.description, editFormData.value.priority)
+  exitEditMode()
+}
 </script>
 
 <style scoped>
@@ -98,8 +124,30 @@ li span:nth-of-type(1):hover {
   text-decoration: line-through;
 }
 
-.disabled {
-  display: none;
+.edit-mode {
+  background-color: rgba(0, 14, 61, 0.417);
+  backdrop-filter: blur(10px);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.edit-mode form {
+  border: 1px solid white;
+  padding: 3rem;
+  background-color: rgb(0, 10, 42);
+  border-radius: 0.25rem;
+}
+.edit-mode .buttons {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding-top: 1rem;
 }
 
 @media (min-width: 1024px) {
