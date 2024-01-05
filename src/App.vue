@@ -1,5 +1,6 @@
 <template>
   <h1>Todo App</h1>
+
   <form @submit.prevent="submitForm">
     <input required type="text" v-model="formData.description" />
     <select v-model="formData.priority">
@@ -9,14 +10,23 @@
     </select>
     <button type="submit">Add</button>
   </form>
+
+  <div class="filter-btn-container">
+    <button @click="toggleFilter" :class="filter && 'filter'">Filter Completed</button>
+  </div>
+
   <div>
-    <ul v-for="task in tasks" :key="task.id">
-      <li :class="task.completed && 'completed'">
-        <span @click="toggleCompleted(task.id)">{{ task.description }} - {{ task.priority }}</span>
-        <span @click="enterEditMode(task.id)" class="edit">Edit</span>
-        <span @click="removeTask(task.id)" class="remove">X</span>
-      </li>
+    <ul v-if="!filter">
+      <ListItem :tasks="tasks" @edit="enterEditMode"></ListItem>
     </ul>
+    <div class="filteredTasks" v-else>
+      <ul>
+        <ListItem :tasks="uncompletedTasks" @edit="enterEditMode"></ListItem>
+      </ul>
+      <ul>
+        <ListItem :tasks="completedTasks" @edit="enterEditMode"></ListItem>
+      </ul>
+    </div>
   </div>
   <div v-if="editMode" class="edit-mode">
     <form @submit.prevent="updateAndExitEditMode">
@@ -28,7 +38,7 @@
         <option :value="Priority.HIGH">{{ Priority.HIGH }}</option>
       </select>
       <div class="buttons">
-        <button @click="exitEditMode">Cancel</button>
+        <button @click="toggleEditMode">Cancel</button>
         <button type="submit">Update</button>
       </div>
     </form>
@@ -37,7 +47,8 @@
 
 <script setup lang="ts">
 import useTask, { Priority, type Task } from '@/use/useTask'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import ListItem from './components/ListItem.vue'
 
 interface FormData {
   description: string
@@ -54,19 +65,25 @@ const selectedId = ref<Task['id']>('')
 
 const editMode = ref(false)
 
-const { createTask, removeTask, toggleCompleted, updateTask, tasks } = useTask()
+const filter = ref(false)
+
+const { createTask, updateTask, tasks } = useTask()
+
+const completedTasks = computed<Task[]>(() => tasks.value.filter((task) => task.completed))
+
+const uncompletedTasks = computed<Task[]>(() => tasks.value.filter((task) => !task.completed))
 
 function submitForm() {
   createTask(formData.value.description, formData.value.priority)
   Object.assign(formData.value, { ...defaultFormData })
 }
 
-function exitEditMode() {
-  editMode.value = false
+function toggleEditMode() {
+  editMode.value = !editMode.value
 }
 
 function enterEditMode(id: Task['id']) {
-  editMode.value = true
+  toggleEditMode()
   selectedId.value = id
 
   setEditFormData(id)
@@ -80,9 +97,14 @@ function setEditFormData(id: Task['id']) {
     }
   })
 }
+
 function updateAndExitEditMode() {
   updateTask(selectedId.value, editFormData.value.description, editFormData.value.priority)
-  exitEditMode()
+  toggleEditMode()
+}
+
+function toggleFilter() {
+  filter.value = !filter.value
 }
 </script>
 
@@ -96,10 +118,15 @@ header {
   margin: 0 auto 2rem;
 }
 
+ul {
+  padding: 0;
+}
+
 li {
   display: grid;
   grid-template-columns: 1fr auto auto;
   gap: 1rem;
+  margin: 0;
 }
 
 li span:nth-of-type(1):hover {
@@ -150,6 +177,31 @@ li span:nth-of-type(1):hover {
   padding-top: 1rem;
 }
 
+.form-and-filter {
+  display: grid;
+  gap: 3rem;
+}
+
+button,
+select {
+  cursor: pointer;
+}
+.filter {
+  color: white;
+  background-color: black;
+}
+
+.filter-btn-container {
+  grid-column-start: span 2;
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem 0;
+}
+.filteredTasks {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
 @media (min-width: 1024px) {
   header {
     display: flex;
