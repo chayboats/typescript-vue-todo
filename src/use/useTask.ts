@@ -1,4 +1,4 @@
-import { compile, ref } from "vue";
+import { ref } from "vue";
 import generateId from "@/utils/uuid";
 
 export interface Task {
@@ -15,7 +15,7 @@ export enum Priority {
 }
 
 export default function useTask(){
-  const tasks = ref <Task[]>([])
+  const tasks = ref<Task[]>([])
 
   function createTask(description: Task['description'], priority: Task['priority']) {
     const task = {
@@ -48,6 +48,8 @@ export default function useTask(){
       }
     })
   }
+
+
 
   return {
     createTask,
