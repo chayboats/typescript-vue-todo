@@ -47,7 +47,7 @@
 
 <script setup lang="ts">
 import useTask, { Priority, type Task } from '@/use/useTask'
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import ListItem from './components/ListItem.vue'
 
 interface FormData {
@@ -85,8 +85,6 @@ function toggleEditMode() {
 function enterEditMode(id: Task['id']) {
   toggleEditMode()
   selectedId.value = id
-
-  setEditFormData(id)
 }
 
 function setEditFormData(id: Task['id']) {
@@ -106,6 +104,8 @@ function updateAndExitEditMode() {
 function toggleFilter() {
   filter.value = !filter.value
 }
+
+watch(selectedId, () => setEditFormData(selectedId.value))
 </script>
 
 <style scoped>
