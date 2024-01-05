@@ -15,16 +15,31 @@
     <button @click="toggleFilter" :class="filter && 'filter'">Filter Completed</button>
   </div>
 
-  <div>
+  <div v-auto-animate>
     <ul v-if="!filter">
-      <ListItem :tasks="tasks" @edit="enterEditMode"></ListItem>
+      <ListItem
+        :tasks="tasks"
+        @toggle-completed="toggleCompleted"
+        @remove="removeTask"
+        @edit="enterEditMode"
+      ></ListItem>
     </ul>
     <div class="filteredTasks" v-else>
       <ul>
-        <ListItem :tasks="uncompletedTasks" @edit="enterEditMode"></ListItem>
+        <ListItem
+          :tasks="uncompletedTasks"
+          @toggle-completed="toggleCompleted"
+          @remove="removeTask"
+          @edit="enterEditMode"
+        ></ListItem>
       </ul>
       <ul>
-        <ListItem :tasks="completedTasks" @edit="enterEditMode"></ListItem>
+        <ListItem
+          :tasks="completedTasks"
+          @toggle-completed="toggleCompleted"
+          @remove="removeTask"
+          @edit="enterEditMode"
+        ></ListItem>
       </ul>
     </div>
   </div>
@@ -38,7 +53,7 @@
         <option :value="Priority.HIGH">{{ Priority.HIGH }}</option>
       </select>
       <div class="buttons">
-        <button @click="toggleEditMode">Cancel</button>
+        <button type="button" @click="toggleEditMode">Cancel</button>
         <button type="submit">Update</button>
       </div>
     </form>
@@ -67,7 +82,7 @@ const editMode = ref(false)
 
 const filter = ref(false)
 
-const { createTask, updateTask, tasks } = useTask()
+const { createTask, updateTask, toggleCompleted, removeTask, tasks } = useTask()
 
 const completedTasks = computed<Task[]>(() => tasks.value.filter((task) => task.completed))
 
@@ -99,13 +114,14 @@ function setEditFormData(id: Task['id']) {
 function updateAndExitEditMode() {
   updateTask(selectedId.value, editFormData.value.description, editFormData.value.priority)
   toggleEditMode()
+  console.log('hit')
 }
 
 function toggleFilter() {
   filter.value = !filter.value
 }
 
-watch(selectedId, () => setEditFormData(selectedId.value))
+watch(selectedId, setEditFormData)
 </script>
 
 <style scoped>
@@ -120,35 +136,6 @@ header {
 
 ul {
   padding: 0;
-}
-
-li {
-  display: grid;
-  grid-template-columns: 1fr auto auto;
-  gap: 1rem;
-  margin: 0;
-}
-
-li span:nth-of-type(1):hover {
-  font-weight: bold;
-  cursor: pointer;
-}
-.edit,
-.remove {
-  color: rgb(124, 124, 124);
-}
-.edit:hover {
-  color: rgb(47, 99, 255);
-  cursor: pointer;
-}
-
-.remove:hover {
-  color: red;
-  cursor: pointer;
-}
-
-.completed {
-  text-decoration: line-through;
 }
 
 .edit-mode {
