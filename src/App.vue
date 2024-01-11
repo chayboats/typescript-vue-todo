@@ -1,9 +1,11 @@
 <template>
-  <h1>Todo App</h1>
+  <div>
+    <h1>Todo App</h1>
+  </div>
 
-  <form @submit.prevent="submitForm">
-    <input required type="text" v-model="formData.description" />
-    <select v-model="formData.priority">
+  <form @submit.prevent="addTask">
+    <input required type="text" v-model="addFormData.description" />
+    <select v-model="addFormData.priority">
       <option :value="Priority.LOW">{{ Priority.LOW }}</option>
       <option :value="Priority.MEDIUM">{{ Priority.MEDIUM }}</option>
       <option :value="Priority.HIGH">{{ Priority.HIGH }}</option>
@@ -11,11 +13,21 @@
     <button type="submit">Add</button>
   </form>
 
-  <div class="filter-btn-container">
+  <div class="sort-and-filter">
     <button @click="toggleFilter" :class="filter && 'filter'">Filter Completed</button>
+
+    <select v-model="sortOption" class="sort">
+      <option value="default">Sort: Default</option>
+      <option value="high">Priority: Low to High</option>
+      <option value="low">Priority: High to Low</option>
+    </select>
   </div>
 
-  <div v-auto-animate>
+  <div class="checkbox-container">
+    <Checkbox v-for="option in filterOptions" :key="option" :id="option" />
+  </div>
+
+  <div v-auto-animate style="grid-column-start: 2">
     <ul v-if="!filter">
       <ListItem
         :tasks="tasks"
@@ -64,6 +76,7 @@
 import useTask, { Priority, type Task } from '@/use/useTask'
 import { ref, computed, watch } from 'vue'
 import ListItem from './components/ListItem.vue'
+import Checkbox from './components/Checkbox.vue'
 
 interface FormData {
   description: string
@@ -71,26 +84,24 @@ interface FormData {
 }
 
 const defaultFormData: FormData = { description: '', priority: Priority.MEDIUM }
+const filterOptions = ['completed', 'incomplete', 'high', 'medium', 'low']
 
-const formData = ref<FormData>({ ...defaultFormData })
-
+const addFormData = ref<FormData>({ ...defaultFormData })
 const editFormData = ref<FormData>({ ...defaultFormData })
-
 const selectedId = ref<Task['id']>('')
-
 const editMode = ref(false)
-
 const filter = ref(false)
+const sortOption = ref('default')
 
-const { createTask, updateTask, toggleCompleted, removeTask, tasks } = useTask()
+const { createTask, updateTask, toggleCompleted, sortTasks, removeTask, tasks } = useTask()
 
 const completedTasks = computed<Task[]>(() => tasks.value.filter((task) => task.completed))
-
 const uncompletedTasks = computed<Task[]>(() => tasks.value.filter((task) => !task.completed))
 
-function submitForm() {
-  createTask(formData.value.description, formData.value.priority)
-  Object.assign(formData.value, { ...defaultFormData })
+function addTask() {
+  createTask(addFormData.value.description, addFormData.value.priority)
+  Object.assign(addFormData.value, { ...defaultFormData })
+  sortTasks(sortOption.value)
 }
 
 function toggleEditMode() {
@@ -114,28 +125,26 @@ function setEditFormData(id: Task['id']) {
 function updateAndExitEditMode() {
   updateTask(selectedId.value, editFormData.value.description, editFormData.value.priority)
   toggleEditMode()
-  console.log('hit')
 }
 
 function toggleFilter() {
-  filter.value = !filter.value
+  if (tasks.value.length > 0) {
+    filter.value = !filter.value
+  }
 }
 
 watch(selectedId, setEditFormData)
+watch(sortOption, sortTasks)
 </script>
 
 <style scoped>
-header {
-  line-height: 1.5;
-}
-
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+form:nth-of-type(1) > * {
+  margin-right: 1rem;
 }
 
 ul {
   padding: 0;
+  column-span: 1 2;
 }
 
 .edit-mode {
@@ -164,11 +173,6 @@ ul {
   padding-top: 1rem;
 }
 
-.form-and-filter {
-  display: grid;
-  gap: 3rem;
-}
-
 button,
 select {
   cursor: pointer;
@@ -178,32 +182,48 @@ select {
   background-color: black;
 }
 
-.filter-btn-container {
+.sort-and-filter {
   grid-column-start: span 2;
   display: flex;
-  justify-content: flex-end;
-  padding: 1rem 0;
+  justify-content: space-between;
+  padding: 1rem 0 3rem 0;
 }
 .filteredTasks {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
 
-  .logo {
-    margin: 0 2rem 0 0;
-  }
+button {
+  padding: 0.25rem 0.5rem;
+}
 
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+select {
+  padding: 0.2rem 0.5rem;
+}
+
+button,
+select {
+  border: none;
+  border-radius: 0.25rem;
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Fira Sans',
+    'Droid Sans',
+    'Helvetica Neue',
+    sans-serif;
+  background-color: rgb(239, 239, 239);
+}
+
+.checkbox-container {
+  display: flex;
+  flex-direction: column;
 }
 </style>
