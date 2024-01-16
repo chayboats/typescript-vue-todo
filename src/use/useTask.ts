@@ -17,7 +17,8 @@ export enum Priority {
 
 export default function useTask() {
   const tasks = ref<Task[]>([])
-  const defaultFilterOptions = ['completed', 'incomplete', 'high', 'medium', 'low']
+  
+  const defaultFilterOptions = ['completed', 'incomplete', ...Object.values(Priority)]
 
   const filterValues = ref([...defaultFilterOptions])
 
@@ -31,28 +32,15 @@ export default function useTask() {
       newTasks = tasks.value.filter((task) => task.completed)
     }
 
-    //DRY
-    if (!filterValues.value.includes(Priority.HIGH.toLowerCase())) {
-      newTasks = tasks.value.filter((task) => task.priority != Priority.HIGH)
-    }
+    const priorities = Object.values(Priority)
+    priorities.forEach((priority) => {
+      if (!filterValues.value.includes(priority)) {
+        newTasks = tasks.value.filter((task) => task.priority != priority)
+      }
+    })
 
-    if (!filterValues.value.includes(Priority.MEDIUM.toLowerCase())) {
-      newTasks = tasks.value.filter((task) => task.priority != Priority.MEDIUM)
-    }
-
-    if (!filterValues.value.includes(Priority.LOW.toLowerCase())) {
-      newTasks = tasks.value.filter((task) => task.priority != Priority.LOW)
-    }
     return newTasks
   })
-
-  // filtered values in an array of strings
-  // ['completed', 'high']
-  // or []
-
-  // computed that returns the tasks with or without the filters being used
-
-  // function to add filters to filtered array
 
   function setFilterOptions(option: string) {
     const includesOption = filterValues.value.includes(option)

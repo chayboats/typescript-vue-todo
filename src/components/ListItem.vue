@@ -24,7 +24,6 @@ li {
   display: grid;
   grid-template-columns: 1fr auto auto;
   gap: 1rem;
-  margin: 0;
 }
 
 li span:nth-of-type(1):hover {

@@ -6,9 +6,9 @@
   <form @submit.prevent="addTask">
     <input required type="text" v-model="addFormData.description" />
     <select v-model="addFormData.priority">
-      <option :value="Priority.LOW">{{ Priority.LOW }}</option>
-      <option :value="Priority.MEDIUM">{{ Priority.MEDIUM }}</option>
-      <option :value="Priority.HIGH">{{ Priority.HIGH }}</option>
+      <option :key="priority" v-for="priority in Object.values(Priority)" :value="priority">
+        {{ priority }}
+      </option>
     </select>
     <button type="submit">Add</button>
   </form>
@@ -63,7 +63,7 @@
 
 <script setup lang="ts">
 import useTask, { Priority, type Task } from '@/use/useTask'
-import { ref, computed, watch } from 'vue'
+import { ref, watch } from 'vue'
 import ListItem from './components/ListItem.vue'
 import Checkbox from './components/Checkbox.vue'
 
@@ -220,5 +220,4 @@ select {
   justify-content: space-between;
   grid-column-start: span 2;
 }
-
 </style>
