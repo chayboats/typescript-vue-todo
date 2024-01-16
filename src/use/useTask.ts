@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import generateId from '@/utils/uuid'
 import { sortToHigh, sortToLow } from '@/utils/sort'
 
@@ -17,6 +17,53 @@ export enum Priority {
 
 export default function useTask() {
   const tasks = ref<Task[]>([])
+  const defaultFilterOptions = ['completed', 'incomplete', 'high', 'medium', 'low']
+
+  const filterValues = ref([...defaultFilterOptions])
+
+  const filteredTasks = computed(() => {
+    let newTasks = tasks.value
+
+    if (!filterValues.value.includes('completed')) {
+      newTasks = tasks.value.filter((task) => !task.completed)
+    }
+    if (!filterValues.value.includes('incomplete')) {
+      newTasks = tasks.value.filter((task) => task.completed)
+    }
+
+    //DRY
+    if (!filterValues.value.includes(Priority.HIGH.toLowerCase())) {
+      newTasks = tasks.value.filter((task) => task.priority != Priority.HIGH)
+    }
+
+    if (!filterValues.value.includes(Priority.MEDIUM.toLowerCase())) {
+      newTasks = tasks.value.filter((task) => task.priority != Priority.MEDIUM)
+    }
+
+    if (!filterValues.value.includes(Priority.LOW.toLowerCase())) {
+      newTasks = tasks.value.filter((task) => task.priority != Priority.LOW)
+    }
+    return newTasks
+  })
+
+  // filtered values in an array of strings
+  // ['completed', 'high']
+  // or []
+
+  // computed that returns the tasks with or without the filters being used
+
+  // function to add filters to filtered array
+
+  function setFilterOptions(option: string) {
+    const includesOption = filterValues.value.includes(option)
+
+    if (!includesOption) {
+      filterValues.value.push(option)
+      return
+    }
+
+    filterValues.value = filterValues.value.filter((string) => string != option)
+  }
 
   function createTask(description: Task['description'], priority: Task['priority']) {
     const task: Task = {
@@ -53,6 +100,7 @@ export default function useTask() {
       }
     })
   }
+
   function sortByDefault(a: Task, b: Task) {
     const idA = Number(a.id)
     const idB = Number(b.id)
@@ -85,6 +133,9 @@ export default function useTask() {
     sortTasks,
     toggleCompleted,
     updateTask,
+    setFilterOptions,
+    filteredTasks,
+    defaultFilterOptions,
     tasks
   }
 }

@@ -13,35 +13,35 @@
     <button type="submit">Add</button>
   </form>
 
-  <div class="sort-and-filter">
-    <button>Filter Completed</button>
-
-    <select v-model="sortOption" class="sort">
+  <div class="sort">
+    <select v-model="sortOption">
       <option value="default">Sort: Default</option>
       <option value="high">Priority: Low to High</option>
       <option value="low">Priority: High to Low</option>
     </select>
   </div>
 
-  <div class="checkbox-container">
-    <Checkbox
-      v-for="option in Object.keys(filterOptions)"
-      :key="option"
-      :filter-option="option"
-      :checked="filterOptions[option as keyof typeof filterOptions]"
-      @click="filterTasks(option)"
-    />
-  </div>
+  <div class="filter-and-list">
+    <div class="checkbox-container">
+      <Checkbox
+        v-for="option in defaultFilterOptions"
+        :key="option"
+        :filter-option="option"
+        :checked="true"
+        @click="setFilterOptions(option)"
+      />
+    </div>
 
-  <div v-auto-animate style="grid-column-start: 2">
-    <ul>
-      <ListItem
-        :tasks="tasks"
-        @toggle-completed="toggleCompleted"
-        @remove="removeTask"
-        @edit="enterEditMode"
-      ></ListItem>
-    </ul>
+    <div v-auto-animate style="grid-column-start: 2">
+      <ul>
+        <ListItem
+          :tasks="filteredTasks"
+          @toggle-completed="toggleCompleted"
+          @remove="removeTask"
+          @edit="enterEditMode"
+        ></ListItem>
+      </ul>
+    </div>
   </div>
 
   <div v-if="editMode" class="edit-mode">
@@ -72,23 +72,7 @@ interface FormData {
   priority: Priority
 }
 
-interface FilterOptions {
-  completed: boolean
-  incomplete: boolean
-  high: boolean
-  medium: boolean
-  low: boolean
-}
-
 const defaultFormData: FormData = { description: '', priority: Priority.MEDIUM }
-
-const defaultFilterOptions: FilterOptions = {
-  completed: true,
-  incomplete: true,
-  high: true,
-  medium: true,
-  low: true
-}
 
 const addFormData = ref<FormData>({ ...defaultFormData })
 const editFormData = ref<FormData>({ ...defaultFormData })
@@ -96,24 +80,17 @@ const selectedId = ref<Task['id']>('')
 const editMode = ref(false)
 const sortOption = ref('default')
 
-const filterOptions = ref<FilterOptions>({ ...defaultFilterOptions })
-const filterMode = computed(() => toggleFilterMode)
-
-
-const filteredTasks = ref<Task[]>([])
-const completedTasks = computed<Task[]>(() => tasks.value.filter((task) => task.completed))
-const incompleteTasks = computed<Task[]>(() => tasks.value.filter((task) => !task.completed))
-const highTasks = computed<Task[]>(() =>
-  tasks.value.filter((task) => (task.priority = Priority.HIGH))
-)
-const mediumTasks = computed<Task[]>(() =>
-  tasks.value.filter((task) => (task.priority = Priority.MEDIUM))
-)
-const lowTasks = computed<Task[]>(() =>
-  tasks.value.filter((task) => (task.priority = Priority.MEDIUM))
-)
-
-const { createTask, updateTask, toggleCompleted, sortTasks, removeTask, tasks } = useTask()
+const {
+  createTask,
+  updateTask,
+  toggleCompleted,
+  sortTasks,
+  removeTask,
+  setFilterOptions,
+  filteredTasks,
+  defaultFilterOptions,
+  tasks
+} = useTask()
 
 function addTask() {
   createTask(addFormData.value.description, addFormData.value.priority)
@@ -123,14 +100,6 @@ function addTask() {
 
 function toggleEditMode() {
   editMode.value = !editMode.value
-}
-
-function toggleFilterMode() {
-  const optionValues = Object.values(filterOptions.value)
-  const containsFalse = optionValues.indexOf(false)
-
-  console
-  return containsFalse != -1
 }
 
 function enterEditMode(id: Task['id']) {
@@ -150,34 +119,6 @@ function setEditFormData(id: Task['id']) {
 function updateAndExitEditMode() {
   updateTask(selectedId.value, editFormData.value.description, editFormData.value.priority)
   toggleEditMode()
-}
-
-function toggleFilters(option: string) {
-  filterOptions.value[option as keyof FilterOptions] =
-    !filterOptions.value[option as keyof FilterOptions]
-}
-
-function filterTasks(option: string) {
-  toggleFilters(option)
-  let newTasks: Task[] = []
-  tasks.value.forEach((task) => {
-    if (filterOptions.value.completed && task.completed) {
-      newTasks.push(task)
-    }
-    if (!filterOptions.value.completed && !task.completed) {
-      newTasks.push(task)
-    }
-    if (filterOptions.value.high && task.priority == 'High') {
-      newTasks.push(task)
-    }
-    if (filterOptions.value.medium && task.priority == 'Medium') {
-      newTasks.push(task)
-    }
-    if (filterOptions.value.low && task.priority == 'Low') {
-      newTasks.push(task)
-    }
-  })
-  tasks.value = newTasks
 }
 
 watch(selectedId, setEditFormData)
@@ -229,10 +170,10 @@ select {
   background-color: black;
 }
 
-.sort-and-filter {
+.sort {
   grid-column-start: span 2;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   padding: 1rem 0 3rem 0;
 }
 .filteredTasks {
@@ -273,4 +214,11 @@ select {
   display: flex;
   flex-direction: column;
 }
+
+.filter-and-list {
+  display: flex;
+  justify-content: space-between;
+  grid-column-start: span 2;
+}
+
 </style>
