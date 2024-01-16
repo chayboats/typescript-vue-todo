@@ -14,7 +14,7 @@
   </form>
 
   <div class="sort-and-filter">
-    <button @click="toggleFilter" :class="filter && 'filter'">Filter Completed</button>
+    <button>Filter Completed</button>
 
     <select v-model="sortOption" class="sort">
       <option value="default">Sort: Default</option>
@@ -24,11 +24,17 @@
   </div>
 
   <div class="checkbox-container">
-    <Checkbox v-for="option in filterOptions" :key="option" :id="option" />
+    <Checkbox
+      v-for="option in Object.keys(filterOptions)"
+      :key="option"
+      :filter-option="option"
+      :checked="filterOptions[option as keyof typeof filterOptions]"
+      @click="filterTasks(option)"
+    />
   </div>
 
   <div v-auto-animate style="grid-column-start: 2">
-    <ul v-if="!filter">
+    <ul>
       <ListItem
         :tasks="tasks"
         @toggle-completed="toggleCompleted"
@@ -36,25 +42,8 @@
         @edit="enterEditMode"
       ></ListItem>
     </ul>
-    <div class="filteredTasks" v-else>
-      <ul>
-        <ListItem
-          :tasks="uncompletedTasks"
-          @toggle-completed="toggleCompleted"
-          @remove="removeTask"
-          @edit="enterEditMode"
-        ></ListItem>
-      </ul>
-      <ul>
-        <ListItem
-          :tasks="completedTasks"
-          @toggle-completed="toggleCompleted"
-          @remove="removeTask"
-          @edit="enterEditMode"
-        ></ListItem>
-      </ul>
-    </div>
   </div>
+
   <div v-if="editMode" class="edit-mode">
     <form @submit.prevent="updateAndExitEditMode">
       <h2>Update Task</h2>
@@ -83,20 +72,48 @@ interface FormData {
   priority: Priority
 }
 
+interface FilterOptions {
+  completed: boolean
+  incomplete: boolean
+  high: boolean
+  medium: boolean
+  low: boolean
+}
+
 const defaultFormData: FormData = { description: '', priority: Priority.MEDIUM }
-const filterOptions = ['completed', 'incomplete', 'high', 'medium', 'low']
+
+const defaultFilterOptions: FilterOptions = {
+  completed: true,
+  incomplete: true,
+  high: true,
+  medium: true,
+  low: true
+}
 
 const addFormData = ref<FormData>({ ...defaultFormData })
 const editFormData = ref<FormData>({ ...defaultFormData })
 const selectedId = ref<Task['id']>('')
 const editMode = ref(false)
-const filter = ref(false)
 const sortOption = ref('default')
 
-const { createTask, updateTask, toggleCompleted, sortTasks, removeTask, tasks } = useTask()
+const filterOptions = ref<FilterOptions>({ ...defaultFilterOptions })
+const filterMode = computed(() => toggleFilterMode)
 
+
+const filteredTasks = ref<Task[]>([])
 const completedTasks = computed<Task[]>(() => tasks.value.filter((task) => task.completed))
-const uncompletedTasks = computed<Task[]>(() => tasks.value.filter((task) => !task.completed))
+const incompleteTasks = computed<Task[]>(() => tasks.value.filter((task) => !task.completed))
+const highTasks = computed<Task[]>(() =>
+  tasks.value.filter((task) => (task.priority = Priority.HIGH))
+)
+const mediumTasks = computed<Task[]>(() =>
+  tasks.value.filter((task) => (task.priority = Priority.MEDIUM))
+)
+const lowTasks = computed<Task[]>(() =>
+  tasks.value.filter((task) => (task.priority = Priority.MEDIUM))
+)
+
+const { createTask, updateTask, toggleCompleted, sortTasks, removeTask, tasks } = useTask()
 
 function addTask() {
   createTask(addFormData.value.description, addFormData.value.priority)
@@ -106,6 +123,14 @@ function addTask() {
 
 function toggleEditMode() {
   editMode.value = !editMode.value
+}
+
+function toggleFilterMode() {
+  const optionValues = Object.values(filterOptions.value)
+  const containsFalse = optionValues.indexOf(false)
+
+  console
+  return containsFalse != -1
 }
 
 function enterEditMode(id: Task['id']) {
@@ -127,10 +152,32 @@ function updateAndExitEditMode() {
   toggleEditMode()
 }
 
-function toggleFilter() {
-  if (tasks.value.length > 0) {
-    filter.value = !filter.value
-  }
+function toggleFilters(option: string) {
+  filterOptions.value[option as keyof FilterOptions] =
+    !filterOptions.value[option as keyof FilterOptions]
+}
+
+function filterTasks(option: string) {
+  toggleFilters(option)
+  let newTasks: Task[] = []
+  tasks.value.forEach((task) => {
+    if (filterOptions.value.completed && task.completed) {
+      newTasks.push(task)
+    }
+    if (!filterOptions.value.completed && !task.completed) {
+      newTasks.push(task)
+    }
+    if (filterOptions.value.high && task.priority == 'High') {
+      newTasks.push(task)
+    }
+    if (filterOptions.value.medium && task.priority == 'Medium') {
+      newTasks.push(task)
+    }
+    if (filterOptions.value.low && task.priority == 'Low') {
+      newTasks.push(task)
+    }
+  })
+  tasks.value = newTasks
 }
 
 watch(selectedId, setEditFormData)

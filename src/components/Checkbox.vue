@@ -1,14 +1,18 @@
 <template>
   <div style="display: flex">
-    <input type="checkbox" :id="id" :name="id" />
-    <label class="check" style="text-transform: capitalize" :for="id">{{ id }}</label>
+    <input @click="$emit('click')" type="checkbox" :id="filterOption" :name="filterOption" :value="filterOption" :checked="checked"/>
+    <label class="check" style="text-transform: capitalize" :for="filterOption">{{ filterOption }}</label>
   </div>
 </template>
 
 <script setup lang="ts">
-defineProps({
-  id: { type: String, required: true }
-})
+ defineProps({
+  filterOption: { type: String, required: true },
+  checked: {type: Boolean, required: true}
+ })
+
+ defineEmits(['click'])
+
 </script>
 
 <style scoped>

@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import generateId from '@/utils/uuid'
+import { sortToHigh, sortToLow } from '@/utils/sort'
 
 export interface Task {
   description: string
@@ -52,36 +53,29 @@ export default function useTask() {
       }
     })
   }
-
-  function sortToHigh(a: string | number, b: string | number) {
-    if (a < b) {
-      return -1
-    }
-    return 1
+  function sortByDefault(a: Task, b: Task) {
+    const idA = Number(a.id)
+    const idB = Number(b.id)
+    return sortToHigh(idA, idB)
   }
 
-  function sortToLow(a: string | number, b: string | number) {
-    if (a > b) {
-      return -1
+  function sortByPriority(a: Task, b: Task, direction: string) {
+    const priorities = { Low: 0, Medium: 1, High: 2 }
+
+    const priorityA = priorities[a.priority]
+    const priorityB = priorities[b.priority]
+    if (direction == 'high') {
+      return sortToHigh(priorityA, priorityB)
     }
-    return 1
+    return sortToLow(priorityA, priorityB)
   }
 
   function sortTasks(direction: string) {
     tasks.value.sort((a, b) => {
       if (direction == 'default') {
-        const idA = Number(a.id)
-        const idB = Number(b.id)
-        return sortToHigh(idA, idB)
+        return sortByDefault(a, b)
       }
-      const priorities = { Low: 0, Medium: 1, High: 2 }
-
-      const priorityA = priorities[a.priority]
-      const priorityB = priorities[b.priority]
-      if (direction == 'high') {
-        return sortToHigh(priorityA, priorityB)
-      }
-      return sortToLow(priorityA, priorityB)
+      return sortByPriority(a, b, direction)
     })
   }
 
