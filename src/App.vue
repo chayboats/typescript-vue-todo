@@ -33,7 +33,9 @@
     </div>
 
     <div v-auto-animate style="grid-column-start: 2">
-      <ul>
+      <p v-if="filteredTasks.length == 0"><em>Start adding some tasks</em></p>
+      <p v-else-if="filteredTasks.length == 0"><em>No results matching your filter</em></p>
+      <ul v-else>
         <ListItem
           :tasks="filteredTasks"
           @toggle-completed="toggleCompleted"
@@ -88,8 +90,7 @@ const {
   removeTask,
   setFilterOptions,
   filteredTasks,
-  defaultFilterOptions,
-  tasks
+  defaultFilterOptions
 } = useTask()
 
 function addTask() {
@@ -108,7 +109,7 @@ function enterEditMode(id: Task['id']) {
 }
 
 function setEditFormData(id: Task['id']) {
-  tasks.value.filter((task) => {
+  filteredTasks.value.filter((task) => {
     if (task.id == id) {
       editFormData.value.description = task.description
       editFormData.value.priority = task.priority
@@ -119,6 +120,7 @@ function setEditFormData(id: Task['id']) {
 function updateAndExitEditMode() {
   updateTask(selectedId.value, editFormData.value.description, editFormData.value.priority)
   toggleEditMode()
+  sortTasks(sortOption.value)
 }
 
 watch(selectedId, setEditFormData)

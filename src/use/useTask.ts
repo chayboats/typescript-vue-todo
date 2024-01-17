@@ -17,29 +17,34 @@ export enum Priority {
 
 export default function useTask() {
   const tasks = ref<Task[]>([])
-  
-  const defaultFilterOptions = ['completed', 'incomplete', ...Object.values(Priority)]
+
+  const defaultFilterOptions = ['completed', ...Object.values(Priority)]
 
   const filterValues = ref([...defaultFilterOptions])
 
+  function filterTask(task: Task, filter: string) {
+    switch (filter) {
+      case 'completed':
+        return task.completed === true
+      case Priority.LOW:
+        return task.priority === Priority.LOW
+      case Priority.MEDIUM:
+        return task.priority === Priority.MEDIUM
+      case Priority.HIGH:
+        return task.priority === Priority.HIGH
+      default:
+        return task.completed === false
+    }
+  }
+
   const filteredTasks = computed(() => {
-    let newTasks = tasks.value
+    let filteredTasks = tasks.value
 
-    if (!filterValues.value.includes('completed')) {
-      newTasks = tasks.value.filter((task) => !task.completed)
-    }
-    if (!filterValues.value.includes('incomplete')) {
-      newTasks = tasks.value.filter((task) => task.completed)
-    }
-
-    const priorities = Object.values(Priority)
-    priorities.forEach((priority) => {
-      if (!filterValues.value.includes(priority)) {
-        newTasks = tasks.value.filter((task) => task.priority != priority)
-      }
+    filterValues.value.forEach((filter) => {
+      filteredTasks = filteredTasks.filter((task) => filterTask(task, filter))
     })
 
-    return newTasks
+    return filteredTasks
   })
 
   function setFilterOptions(option: string) {
