@@ -18,33 +18,49 @@ export enum Priority {
 export default function useTask() {
   const tasks = ref<Task[]>([])
 
-  const defaultFilterOptions = ['completed', ...Object.values(Priority)]
+  const defaultFilterOptions = ['completed', 'incomplete', ...Object.values(Priority)]
 
   const filterValues = ref([...defaultFilterOptions])
 
-  function filterTask(task: Task, filter: string) {
-    switch (filter) {
-      case 'completed':
-        return task.completed === true
-      case Priority.LOW:
-        return task.priority === Priority.LOW
-      case Priority.MEDIUM:
-        return task.priority === Priority.MEDIUM
-      case Priority.HIGH:
-        return task.priority === Priority.HIGH
-      default:
-        return task.completed === false
+  const isFilterValid = computed(() => {
+    const firstCheck = ['completed', 'incomplete']
+    if (firstCheck.every((check) => !filterValues.value.includes(check))) {
+      return false
     }
+    const secondCheck = [...Object.values(Priority)]
+    if (secondCheck.every((check) => !filterValues.value.includes(check))) {
+      return false
+    }
+
+    return true
+  })
+
+  function filterDoesNotInclude(value: string) {
+    return !filterValues.value.includes(value)
   }
 
   const filteredTasks = computed(() => {
-    let filteredTasks = tasks.value
+    let newTasks = tasks.value
 
-    filterValues.value.forEach((filter) => {
-      filteredTasks = filteredTasks.filter((task) => filterTask(task, filter))
+    if (!isFilterValid.value) return []
+
+    if (filterDoesNotInclude('incomplete')) {
+      newTasks = tasks.value.filter((task) => task.completed)
+    }
+
+    if (filterDoesNotInclude('completed')) {
+      newTasks = tasks.value.filter((task) => !task.completed)
+    }
+
+    const filterByPriority = (priority: Priority) =>
+      (newTasks = newTasks.filter((task) => task.priority != priority))
+
+    Object.values(Priority).forEach((priority) => {
+      if (filterDoesNotInclude(priority)) {
+        filterByPriority(priority)
+      }
     })
-
-    return filteredTasks
+    return newTasks
   })
 
   function setFilterOptions(option: string) {

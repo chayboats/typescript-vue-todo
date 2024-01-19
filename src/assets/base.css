@@ -1,5 +1,5 @@
 /* color palette from <https://github.com/vuejs/theme> */
-:root {
+/* :root {
   --vt-c-white: #ffffff;
   --vt-c-white-soft: #f8f8f8;
   --vt-c-white-mute: #f2f2f2;
@@ -49,8 +49,7 @@
     --color-text: var(--vt-c-text-dark-2);
   }
 }
-
-*,
+*/ *,
 *::before,
 *::after {
   box-sizing: border-box;
@@ -61,13 +60,12 @@
 body {
   min-height: 100vh;
   color: var(--color-text);
-  background: var(--color-background);
+  background: linear-gradient(white, rgba(0, 128, 128, 0.151));
   transition:
     color 0.5s,
     background-color 0.5s;
   line-height: 1.6;
-  font-family:
-    Inter,
+  font-family: Inter,
     -apple-system,
     BlinkMacSystemFont,
     'Segoe UI',

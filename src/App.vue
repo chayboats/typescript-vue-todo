@@ -1,9 +1,13 @@
 <template>
-  <div>
-    <h1>Todo App</h1>
-  </div>
+  <header>
+    <div class="app-logo">
+      <font-awesome-icon :icon="['fas', 'pen-to-square']" class="logo" />
+      <span class="title">Todo App</span>
+    </div>
+    <font-awesome-icon :icon="['fas', 'sliders']" class="menu" />
+  </header>
 
-  <form @submit.prevent="addTask">
+  <form @submit.prevent="addTask" class="add-task-form">
     <input required type="text" v-model="addFormData.description" />
     <select v-model="addFormData.priority">
       <option :key="priority" v-for="priority in Object.values(Priority)" :value="priority">
@@ -13,37 +17,34 @@
     <button type="submit">Add</button>
   </form>
 
+  <div v-auto-animate class="list">
+    <p v-if="tasks.length == 0"><em>Start adding some tasks</em></p>
+    <p v-else-if="filteredTasks.length == 0"><em>No results matching your filter</em></p>
+    <ul v-else>
+      <ListItem
+        :tasks="filteredTasks"
+        @toggle-completed="toggleCompleted"
+        @remove="removeTask"
+        @edit="enterEditMode"
+      ></ListItem>
+    </ul>
+  </div>
+
+  <div class="checkbox-container">
+    <Checkbox
+      v-for="option in defaultFilterOptions"
+      :key="option"
+      :filter-option="option"
+      :checked="true"
+      @click="setFilterOptions(option)"
+    />
+  </div>
   <div class="sort">
     <select v-model="sortOption">
       <option value="default">Sort: Default</option>
       <option value="high">Priority: Low to High</option>
       <option value="low">Priority: High to Low</option>
     </select>
-  </div>
-
-  <div class="filter-and-list">
-    <div class="checkbox-container">
-      <Checkbox
-        v-for="option in defaultFilterOptions"
-        :key="option"
-        :filter-option="option"
-        :checked="true"
-        @click="setFilterOptions(option)"
-      />
-    </div>
-
-    <div v-auto-animate style="grid-column-start: 2">
-      <p v-if="filteredTasks.length == 0"><em>Start adding some tasks</em></p>
-      <p v-else-if="filteredTasks.length == 0"><em>No results matching your filter</em></p>
-      <ul v-else>
-        <ListItem
-          :tasks="filteredTasks"
-          @toggle-completed="toggleCompleted"
-          @remove="removeTask"
-          @edit="enterEditMode"
-        ></ListItem>
-      </ul>
-    </div>
   </div>
 
   <div v-if="editMode" class="edit-mode">
@@ -90,6 +91,7 @@ const {
   removeTask,
   setFilterOptions,
   filteredTasks,
+  tasks,
   defaultFilterOptions
 } = useTask()
 
@@ -185,11 +187,11 @@ select {
 }
 
 button {
-  padding: 0.25rem 0.5rem;
+  padding: 0.25rem 0.7rem;
 }
 
 select {
-  padding: 0.2rem 0.5rem;
+  padding: 0.5rem 0.7rem;
 }
 
 button,
@@ -210,6 +212,7 @@ select {
     'Helvetica Neue',
     sans-serif;
   background-color: rgb(239, 239, 239);
+  transition: 300ms;
 }
 
 .checkbox-container {
@@ -217,9 +220,49 @@ select {
   flex-direction: column;
 }
 
-.filter-and-list {
+.app-logo {
   display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.logo {
+  font-size: 1.5rem;
+  color: #6a988f;
+}
+
+.menu {
+  color: #5a6b68be;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  font-family: 'Nunito', sans-serif;
+}
+header {
+  display: flex;
+  align-items: center;
   justify-content: space-between;
-  grid-column-start: span 2;
+}
+
+.add-task-form {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+}
+
+.add-task-form input {
+  padding: 0.5rem;
+  border: 1px solid #cdcdcd;
+  border-radius: 3px;
+  box-shadow: 0 0 5px 0 #6a988f7f;
+}
+button:hover,
+select:hover {
+  background-color: #6a988f;
+  color: white;
+}
+
+.list {
+
 }
 </style>
