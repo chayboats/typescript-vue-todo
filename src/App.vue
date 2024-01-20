@@ -227,11 +227,11 @@ select {
 }
 .logo {
   font-size: 1.5rem;
-  color: #6a988f;
+  color: rgb(154, 204, 204);
 }
 
 .menu {
-  color: #5a6b68be;
+  color: rgb(154, 204, 204);
 }
 
 .title {
@@ -263,6 +263,5 @@ select:hover {
 }
 
 .list {
-
 }
 </style>

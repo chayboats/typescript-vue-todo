@@ -6,8 +6,8 @@ import App from './App.vue'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-import { faPenToSquare, faSliders } from '@fortawesome/free-solid-svg-icons'
+import { faPenToSquare, faSliders, faL, faM, faH } from '@fortawesome/free-solid-svg-icons'
 
-library.add(faPenToSquare, faSliders)
+library.add(faPenToSquare, faSliders, faL, faM, faH)
 
 createApp(App).component('font-awesome-icon', FontAwesomeIcon).use(autoAnimatePlugin).mount('#app')
