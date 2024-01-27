@@ -1,18 +1,32 @@
 <template>
   <div style="display: flex">
-    <input @click="$emit('click')" type="checkbox" :id="filterOption" :name="filterOption" :value="filterOption" :checked="checked"/>
-    <label class="check" style="text-transform: capitalize" :for="filterOption">{{ filterOption }}</label>
+    <span>
+      <span><CheckedBoxIcon /><UncheckedBoxIcon /> </span>
+    </span>
+    <input
+      @click="$emit('click')"
+      type="checkbox"
+      :id="filterOption"
+      :name="filterOption"
+      :value="filterOption"
+      :checked="checked"
+    />
+    <label class="check" style="text-transform: capitalize" :for="filterOption">{{
+      filterOption
+    }}</label>
   </div>
 </template>
 
 <script setup lang="ts">
- defineProps({
+import CheckedBoxIcon from './Icons/CheckedBoxIcon.vue'
+import UncheckedBoxIcon from './Icons/UncheckedBoxIcon.vue'
+
+defineProps({
   filterOption: { type: String, required: true },
-  checked: {type: Boolean, required: true}
- })
+  checked: { type: Boolean, required: true }
+})
 
- defineEmits(['click'])
-
+defineEmits(['click'])
 </script>
 
 <style scoped>

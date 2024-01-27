@@ -1,11 +1,5 @@
 <template>
-  <header>
-    <div class="app-logo">
-      <font-awesome-icon :icon="['fas', 'pen-to-square']" class="logo" />
-      <span class="title">Todo App</span>
-    </div>
-    <font-awesome-icon :icon="['fas', 'sliders']" class="menu" />
-  </header>
+  <Header />
 
   <form @submit.prevent="addTask" class="add-task-form">
     <input required type="text" v-model="addFormData.description" />
@@ -18,7 +12,11 @@
   </form>
 
   <div v-auto-animate class="list">
-    <p v-if="tasks.length == 0"><em>Start adding some tasks</em></p>
+    <div v-if="tasks.length == 0">
+      <p><em>Start adding some tasks</em></p>
+      <AddTasksIcon />
+    </div>
+
     <p v-else-if="filteredTasks.length == 0"><em>No results matching your filter</em></p>
     <ul v-else>
       <ListItem
@@ -39,12 +37,19 @@
       @click="setFilterOptions(option)"
     />
   </div>
+
   <div class="sort">
     <select v-model="sortOption">
       <option value="default">Sort: Default</option>
       <option value="high">Priority: Low to High</option>
       <option value="low">Priority: High to Low</option>
     </select>
+  </div>
+
+  <div v-if="false" class="filters-container">
+    <div class="filters">
+      <FilterCard />
+    </div>
   </div>
 
   <div v-if="editMode" class="edit-mode">
@@ -69,6 +74,9 @@ import useTask, { Priority, type Task } from '@/use/useTask'
 import { ref, watch } from 'vue'
 import ListItem from './components/ListItem.vue'
 import Checkbox from './components/Checkbox.vue'
+import AddTasksIcon from './components/Icons/AddTasksIcon.vue'
+import FilterCard from './components/FilterCard.vue'
+import Header from './components/Header.vue'
 
 interface FormData {
   description: string
@@ -164,26 +172,11 @@ ul {
   gap: 0.5rem;
   padding-top: 1rem;
 }
-
-button,
-select {
-  cursor: pointer;
-}
-.filter {
-  color: white;
-  background-color: black;
-}
-
 .sort {
   grid-column-start: span 2;
   display: flex;
   justify-content: flex-end;
   padding: 1rem 0 3rem 0;
-}
-.filteredTasks {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
 }
 
 button {
@@ -194,8 +187,17 @@ select {
   padding: 0.5rem 0.7rem;
 }
 
+button:hover,
+select:hover {
+  background-color: #48acac;
+  color: white;
+  cursor: pointer;
+}
+
 button,
 select {
+  background-color: rgb(230, 230, 230);
+
   border: none;
   border-radius: 0.25rem;
   font-family:
@@ -220,31 +222,6 @@ select {
   flex-direction: column;
 }
 
-.app-logo {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-.logo {
-  font-size: 1.5rem;
-  color: rgb(154, 204, 204);
-}
-
-.menu {
-  color: rgb(154, 204, 204);
-}
-
-.title {
-  font-size: 2rem;
-  font-weight: 700;
-  font-family: 'Nunito', sans-serif;
-}
-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
 .add-task-form {
   display: grid;
   grid-template-columns: 1fr auto auto;
@@ -252,16 +229,30 @@ header {
 
 .add-task-form input {
   padding: 0.5rem;
-  border: 1px solid #cdcdcd;
+  border: none;
   border-radius: 3px;
-  box-shadow: 0 0 5px 0 #6a988f7f;
-}
-button:hover,
-select:hover {
-  background-color: #6a988f;
-  color: white;
+  box-shadow: 0 0 20px 0 #7d959044;
+  background-color: #f1f1f1;
 }
 
-.list {
+.filters-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  background-color: rgb(46, 53, 52);
+}
+
+.filters {
+  border-radius: 1rem 1rem 0 0;
+  width: 100%;
+  background-color: #cbe8e6;
+  margin: 2rem auto;
+  margin-bottom: 0;
+  max-width: 768px;
 }
 </style>

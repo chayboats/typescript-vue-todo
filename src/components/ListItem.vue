@@ -76,7 +76,6 @@ li span:nth-of-type(1):hover {
 }
 .low {
   color: rgb(0, 95, 95);
-
   background-color: rgb(214, 255, 255);
 }
 .medium {
