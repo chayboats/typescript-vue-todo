@@ -1,88 +1,90 @@
 <template>
-  <div @click="toggleSelected" class="filter" :class="filterClasses">
-    <h2>{{filter}}</h2>
+  <div v-auto-animate @click="toggleSelected" class="filter" :class="filterClasses">
+    <h2>{{ filter }}</h2>
+    <CheckIcon v-if="!unselected" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref, computed } from 'vue'
+import CheckIcon from './Icons/CheckIcon.vue'
 
 const props = defineProps({
-  filter: {type: String, required: true}
+  filter: { type: String, required: true }
 })
 
 const unselected = ref(false)
 
 const filterClasses = computed(() => {
-  if(unselected.value) {
+  if (unselected.value) {
     return `${props.filter} unselected`
   }
   return props.filter
 })
 
-
 function toggleSelected() {
   unselected.value = !unselected.value
 }
-
 </script>
 
 <style scoped>
 .filter {
   border-radius: 0.5rem;
-  background-color: rgb(51, 160, 51);
   color: white;
-  width: 100%;
-  height: 100%;
   transition: 250ms;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1rem;
+  height: 100%;
 }
 .filter:hover {
   cursor: pointer;
 }
 
 .unselected {
-color: rgba(255, 255, 255, 0.326)
+  color: rgba(255, 255, 255, 0.326);
 }
-
 
 h2 {
   text-transform: capitalize;
+  margin: 0;
 }
 .completed {
-  background-color: rgb(1, 92, 92);
+  background-color: rgb(32, 95, 95);
 }
 .incomplete {
-  background-color: rgb(0, 137, 137);
+  background-color: rgb(45, 133, 133);
 }
 
 .Low {
-  background-color: rgb(48, 180, 180);
+  background-color: rgb(88, 165, 165);
 }
 .Medium {
-  background-color: rgb(116, 188, 116);
+  background-color: rgb(116, 188, 156);
 }
 
 .High {
-  background-color: rgb(68, 126, 68);
+  background-color: rgb(68, 126, 99);
 }
 
 .completed.unselected {
-  background-color: rgb(56, 98, 98)
+  background-color: rgb(56, 98, 98);
 }
 
 .incomplete.unselected {
-  background-color: rgb(84, 126, 126)
+  background-color: rgb(72, 139, 139);
 }
 
 .Low.unselected {
-  background-color: rgb(139, 176, 176)
+  background-color: rgb(107, 170, 170);
 }
 
 .Medium.unselected {
-  background-color: rgb(147, 197, 147)
+  background-color: rgb(126, 185, 158);
 }
 
 .High.unselected {
-  background-color: rgb(98, 138, 98)
+  background-color: rgb(78, 128, 105);
 }
 </style>

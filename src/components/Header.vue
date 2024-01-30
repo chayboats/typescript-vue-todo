@@ -8,12 +8,8 @@
     <div v-auto-animate class="menu-container">
       <MenuIcon @toggle-menu="toggleMenu" />
       <div v-if="isMenuOpen" class="menu-content">
-        <MenuItem
-        @click="toggleMenu"
-          v-for="item in menuDropdown"
-          :item="item"
-          :last-item="isLastItem(menuDropdown, item)"
-        />
+        <MenuItem @click="$emit('filter')" :item="'filter'" />
+        <MenuItem @click="$emit('sort')" :item="'sort'" :last-item="true" />
       </div>
     </div>
   </header>
@@ -25,18 +21,15 @@ import MenuItem from './MenuItem.vue'
 import MenuIcon from './Icons/MenuIcon.vue'
 import Logo from './Icons/Logo.vue'
 
-const menuDropdown = ['filter', 'sort']
 const isMenuOpen = ref(false)
 
 function toggleMenu() {
   isMenuOpen.value = !isMenuOpen.value
 }
 
-function isLastItem(array: string[], item: string) {
-  const itemIndex = array.indexOf(item)
-  const lastIndex = array.length - 1
-  return itemIndex == lastIndex
-}
+const emits = defineEmits(['filter', 'sort'])
+
+
 </script>
 
 <style scoped>

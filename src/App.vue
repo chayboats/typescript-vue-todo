@@ -46,7 +46,7 @@
     </select>
   </div>
 
-  <Filters />
+  <FilterPopup />
 
   <div v-if="editMode" class="edit-mode">
     <form @submit.prevent="updateAndExitEditMode">
@@ -71,7 +71,7 @@ import { ref, watch } from 'vue'
 import ListItem from './components/ListItem.vue'
 import Checkbox from './components/Checkbox.vue'
 import AddTasksIcon from './components/Icons/AddTasksIcon.vue'
-import Filters from './components/Filters.vue'
+import FilterPopup from './components/FilterPopup.vue'
 import Header from './components/Header.vue'
 
 interface FormData {
