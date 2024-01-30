@@ -1,5 +1,5 @@
 <template>
-  <div class="menu-item">
+  <div @click="$emit('click')" class="menu-item">
     <div>
       <span class="content">{{ item }}</span>
     </div>
@@ -12,6 +12,8 @@ defineProps({
   lastItem: { type: Boolean, value: false },
   item: { type: String, required: true }
 })
+
+defineEmits(['click'])
 </script>
 
 <style scoped>

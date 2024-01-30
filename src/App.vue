@@ -46,11 +46,7 @@
     </select>
   </div>
 
-  <div v-if="false" class="filters-container">
-    <div class="filters">
-      <FilterCard />
-    </div>
-  </div>
+  <Filters />
 
   <div v-if="editMode" class="edit-mode">
     <form @submit.prevent="updateAndExitEditMode">
@@ -75,7 +71,7 @@ import { ref, watch } from 'vue'
 import ListItem from './components/ListItem.vue'
 import Checkbox from './components/Checkbox.vue'
 import AddTasksIcon from './components/Icons/AddTasksIcon.vue'
-import FilterCard from './components/FilterCard.vue'
+import Filters from './components/Filters.vue'
 import Header from './components/Header.vue'
 
 interface FormData {
@@ -233,26 +229,5 @@ select {
   border-radius: 3px;
   box-shadow: 0 0 20px 0 #7d959044;
   background-color: #f1f1f1;
-}
-
-.filters-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  z-index: 1;
-  display: flex;
-  justify-content: center;
-  background-color: rgb(46, 53, 52);
-}
-
-.filters {
-  border-radius: 1rem 1rem 0 0;
-  width: 100%;
-  background-color: #cbe8e6;
-  margin: 2rem auto;
-  margin-bottom: 0;
-  max-width: 768px;
 }
 </style>

@@ -17,10 +17,9 @@
 <script lang="ts" setup>
 import type { Task } from '@/use/useTask'
 import { Priority } from '@/use/useTask'
-import High from './PriorityIcons/High.vue'
-import Medium from './PriorityIcons/Medium.vue'
-import Low from './PriorityIcons/Low.vue'
-
+import High from './Icons/PriorityIcons/High.vue'
+import Medium from './Icons/PriorityIcons/Medium.vue'
+import Low from './Icons/PriorityIcons/Low.vue'
 defineProps({
   tasks: { type: Array<Task>, required: true }
 })

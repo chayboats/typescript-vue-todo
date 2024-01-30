@@ -9,6 +9,7 @@
       <MenuIcon @toggle-menu="toggleMenu" />
       <div v-if="isMenuOpen" class="menu-content">
         <MenuItem
+        @click="toggleMenu"
           v-for="item in menuDropdown"
           :item="item"
           :last-item="isLastItem(menuDropdown, item)"
