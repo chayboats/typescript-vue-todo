@@ -6,8 +6,8 @@
     </div>
 
     <div v-auto-animate class="menu-container">
-      <MenuIcon @toggle-menu="toggleMenu" />
-      <div v-if="isMenuOpen" class="menu-content">
+      <MenuIcon @menu="$emit('menu')" />
+      <div v-if="isOpen" class="menu-content">
         <MenuItem @click="$emit('filter')" :item="'filter'" />
         <MenuItem @click="$emit('sort')" :item="'sort'" :last-item="true" />
       </div>
@@ -16,20 +16,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
 import MenuItem from './MenuItem.vue'
 import MenuIcon from './Icons/MenuIcon.vue'
 import Logo from './Icons/Logo.vue'
 
-const isMenuOpen = ref(false)
 
-function toggleMenu() {
-  isMenuOpen.value = !isMenuOpen.value
-}
-
-const emits = defineEmits(['filter', 'sort'])
-
-
+defineProps({
+  isOpen: { type: Boolean, required: true }
+})
+const emits = defineEmits(['filter', 'sort', 'menu'])
 </script>
 
 <style scoped>

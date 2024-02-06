@@ -1,5 +1,5 @@
 <template>
-  <Header />
+  <Header @filter="handleFilterSelect" @sort="handleSortSelect" @menu="toggleMenu" :is-open="isMenuOpen" />
 
   <form @submit.prevent="addTask" class="add-task-form">
     <input required type="text" v-model="addFormData.description" />
@@ -46,7 +46,7 @@
     </select>
   </div>
 
-  <FilterPopup />
+  <FilterPopup v-if="isFilterSelected"/>
 
   <div v-if="editMode" class="edit-mode">
     <form @submit.prevent="updateAndExitEditMode">
@@ -86,6 +86,10 @@ const editFormData = ref<FormData>({ ...defaultFormData })
 const selectedId = ref<Task['id']>('')
 const editMode = ref(false)
 const sortOption = ref('default')
+const isMenuOpen = ref(false)
+const isFilterSelected = ref(false)
+const isSortSelected = ref(false)
+
 
 const {
   createTask,
@@ -98,6 +102,21 @@ const {
   tasks,
   defaultFilterOptions
 } = useTask()
+
+
+function toggleMenu() {
+  isMenuOpen.value = !isMenuOpen
+}
+
+function handleFilterSelect() {
+  isFilterSelected.value = true
+  isMenuOpen.value = false
+}
+
+function handleSortSelect() {
+  isSortSelected.value = true
+  isMenuOpen.value = false
+}
 
 function addTask() {
   createTask(addFormData.value.description, addFormData.value.priority)
