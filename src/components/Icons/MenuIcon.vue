@@ -1,7 +1,7 @@
 <template>
-  <font-awesome-icon @click="$emit('menu')" :icon="['fas', 'sliders']" class="menu" />
+  <font-awesome-icon @click="$emit('click')" :icon="['fas', 'sliders']" class="menu" />
 </template>
 
 <script setup lang="ts">
-defineEmits(['menu'])
+defineEmits(['click'])
 </script>

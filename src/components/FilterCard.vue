@@ -1,7 +1,7 @@
 <template>
-  <div v-auto-animate @click="toggleSelected" class="filter" :class="filterClasses">
+  <div v-auto-animate @click="handleClick" class="filter" :class="filterClasses">
     <h2>{{ filter }}</h2>
-    <CheckIcon v-if="!unselected" />
+    <CheckIcon v-if="selected" />
   </div>
 </template>
 
@@ -13,17 +13,16 @@ const props = defineProps({
   filter: { type: String, required: true }
 })
 
-const unselected = ref(false)
+const selected = defineModel()
 
-const filterClasses = computed(() => {
-  if (unselected.value) {
-    return `${props.filter} unselected`
-  }
-  return props.filter
-})
+const filterClasses = computed(() => (selected.value ? `${props.filter} unselected` : props.filter))
 
 function toggleSelected() {
-  unselected.value = !unselected.value
+  selected.value = !selected.value
+}
+
+function handleClick() {
+  toggleSelected()
 }
 </script>
 

@@ -15,13 +15,13 @@ export enum Priority {
   HIGH = 'High'
 }
 
+const tasks = ref<Task[]>([])
+
+const defaultFilterOptions = ['completed', 'incomplete', ...Object.values(Priority)]
+
+const filterValues = ref([...defaultFilterOptions])
+
 export default function useTask() {
-  const tasks = ref<Task[]>([])
-
-  const defaultFilterOptions = ['completed', 'incomplete', ...Object.values(Priority)]
-
-  const filterValues = ref([...defaultFilterOptions])
-
   const isFilterValid = computed(() => {
     const firstCheck = ['completed', 'incomplete']
     if (firstCheck.every((check) => !filterValues.value.includes(check))) {
@@ -145,6 +145,7 @@ export default function useTask() {
     setFilterOptions,
     filteredTasks,
     defaultFilterOptions,
-    tasks
+    tasks,
+    filterValues
   }
 }

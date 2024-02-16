@@ -6,7 +6,7 @@
     </div>
 
     <div v-auto-animate class="menu-container">
-      <MenuIcon @menu="$emit('menu')" />
+      <MenuIcon @click="$emit('menu')" />
       <div v-if="isOpen" class="menu-content">
         <MenuItem @click="$emit('filter')" :item="'filter'" />
         <MenuItem @click="$emit('sort')" :item="'sort'" :last-item="true" />

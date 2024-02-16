@@ -1,8 +1,5 @@
 <template>
   <div style="display: flex">
-    <span>
-      <span><CheckedBoxIcon /><UncheckedBoxIcon /> </span>
-    </span>
     <input
       @click="$emit('click')"
       type="checkbox"
@@ -18,8 +15,6 @@
 </template>
 
 <script setup lang="ts">
-import CheckedBoxIcon from './Icons/CheckedBoxIcon.vue'
-import UncheckedBoxIcon from './Icons/UncheckedBoxIcon.vue'
 
 defineProps({
   filterOption: { type: String, required: true },

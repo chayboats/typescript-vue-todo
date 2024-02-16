@@ -46,7 +46,7 @@
     </select>
   </div>
 
-  <FilterPopup v-if="isFilterSelected"/>
+  <FilterPopup @cancel="toggleFilterPopup" v-if="isFilterSelected"/>
 
   <div v-if="editMode" class="edit-mode">
     <form @submit.prevent="updateAndExitEditMode">
@@ -105,7 +105,11 @@ const {
 
 
 function toggleMenu() {
-  isMenuOpen.value = !isMenuOpen
+  isMenuOpen.value = !isMenuOpen.value
+}
+
+function toggleFilterPopup() {
+  isFilterSelected.value = !isFilterSelected.value
 }
 
 function handleFilterSelect() {

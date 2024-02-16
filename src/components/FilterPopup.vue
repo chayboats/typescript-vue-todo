@@ -5,16 +5,19 @@
         <div class="filter-container">
           <div class="filter-header">
             <h2>Filters</h2>
-            <span @click="$emit('cancel')" class="cancel">Cancel</span>
+            <span style="display: flex; gap: 1rem">
+              <button @click="$emit('apply')" class="apply">Apply Filters</button>
+              <button @click="$emit('cancel')" class="cancel">Cancel</button>
+            </span>
           </div>
           <div class="filters">
             <FilterCard
-              v-for="filter in defaultFilterOptions"
-              :key="defaultFilterOptions.indexOf(filter)"
+              v-for="filter in filterValues"
+              v-model="selectedFilters[filter]"
+              :key="filterValues.indexOf(filter)"
               :filter="filter"
             />
           </div>
-          <button @click="$emit('apply')" class="apply">Apply Filters</button>
         </div>
       </div>
     </div>
@@ -24,10 +27,19 @@
 <script setup lang="ts">
 import FilterCard from './FilterCard.vue'
 import useTask from '@/use/useTask'
+import { ref } from 'vue'
 
-const { defaultFilterOptions } = useTask()
+type SelectedFilters = {
+  [key: string]: boolean
+}
 
 defineEmits(['cancel', 'apply'])
+
+const selectedFilters = ref<SelectedFilters>({})
+
+const { filterValues } = useTask()
+
+filterValues.value.forEach((filter) => selectedFilters.value[filter] = true)
 </script>
 
 <style scoped>
@@ -51,15 +63,12 @@ defineEmits(['cancel', 'apply'])
 
 .width-setter {
   min-width: 768px;
-  height: 100%;
 }
 
 .filter-container {
-  height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  padding: 2rem;
+  height: 100%;
 }
 
 .filters {
@@ -67,11 +76,7 @@ defineEmits(['cancel', 'apply'])
   flex-direction: column;
   gap: 0.5rem;
   height: 100%;
-}
-
-.cancel:hover {
-  color: rgb(1, 157, 157);
-  cursor: pointer;
+  padding: 2rem;
 }
 
 .filter-header {
@@ -81,18 +86,8 @@ defineEmits(['cancel', 'apply'])
   color: rgb(56, 56, 56);
 }
 
-button:hover {
-  background-color: #48acac;
-  color: white;
-  cursor: pointer;
-}
-
 button {
-  width: 100%;
-  color: white;
-  background-color: rgb(56, 56, 56);
   padding: 0.25rem 0.7rem;
-  border: none;
   border-radius: 0.25rem;
   font-family:
     Inter,
@@ -108,5 +103,26 @@ button {
     'Helvetica Neue',
     sans-serif;
   transition: 300ms;
+}
+
+.apply {
+  color: white;
+  background-color: rgb(56, 56, 56);
+  border: none;
+}
+.apply:hover {
+  background-color: #48acac;
+  color: white;
+  cursor: pointer;
+}
+
+.cancel {
+  border: 1px solid rgb(56, 56, 56);
+}
+
+.cancel:hover {
+  border-color: #48acac;
+  cursor: pointer;
+  color: #48acac;
 }
 </style>
