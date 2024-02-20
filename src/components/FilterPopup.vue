@@ -1,24 +1,20 @@
 <template>
-  <div class="filter-popup">
-    <div class="backdrop">
-      <div class="width-setter">
-        <div class="filter-container">
-          <div class="filter-header">
-            <h2>Filters</h2>
-            <span style="display: flex; gap: 1rem">
-              <button @click="$emit('apply')" class="apply">Apply Filters</button>
-              <button @click="$emit('cancel')" class="cancel">Cancel</button>
-            </span>
-          </div>
-          <div class="filters">
-            <FilterCard
-              v-for="filter in filterValues"
-              v-model="selectedFilters[filter]"
-              :key="filterValues.indexOf(filter)"
-              :filter="filter"
-            />
-          </div>
-        </div>
+  <div class="backdrop">
+    <div class="filter-container">
+      <div class="filter-header">
+        <h2>Filters</h2>
+        <span style="display: flex; gap: 1rem">
+          <button @click="$emit('apply')" class="apply">Apply Filters</button>
+          <button @click="$emit('cancel')" class="cancel">Cancel</button>
+        </span>
+      </div>
+      <div class="filters">
+        <FilterCard
+          v-for="filter in Object.keys(tempFilters)"
+          :key="Object.keys(tempFilters).indexOf(filter)"
+          v-model="tempFilters[filter]"
+          :filter="filter"
+        />
       </div>
     </div>
   </div>
@@ -26,57 +22,38 @@
 
 <script setup lang="ts">
 import FilterCard from './FilterCard.vue'
-import useTask from '@/use/useTask'
-import { ref } from 'vue'
-
-type SelectedFilters = {
-  [key: string]: boolean
-}
 
 defineEmits(['cancel', 'apply'])
 
-const selectedFilters = ref<SelectedFilters>({})
-
-const { filterValues } = useTask()
-
-filterValues.value.forEach((filter) => selectedFilters.value[filter] = true)
+defineProps({
+  tempFilters: { type: Object, required: true }
+})
 </script>
 
 <style scoped>
-.filter-popup {
+.backdrop {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background: linear-gradient(#f6f6f6, rgb(64, 155, 155));
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
-  z-index: 1;
-  background-color: #f6f6f6;
   height: 100%;
-}
-
-.backdrop {
-  background: linear-gradient(#f6f6f6, rgba(0, 128, 128, 0.273));
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  height: 100%;
-}
-
-.width-setter {
-  min-width: 768px;
 }
 
 .filter-container {
   display: flex;
   flex-direction: column;
+  padding: 2rem;
   height: 100%;
 }
 
-.filters {
+.filter-container .filters {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   height: 100%;
-  padding: 2rem;
 }
 
 .filter-header {

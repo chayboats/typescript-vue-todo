@@ -15,28 +15,39 @@ export enum Priority {
   HIGH = 'High'
 }
 
+type FilterTypes = 'completed' | 'incomplete' | Priority.LOW | Priority.MEDIUM | Priority.HIGH
+
+export interface FilterValues {
+  completed: boolean
+  incomplete: boolean
+  Low: boolean
+  Medium: boolean
+  High: boolean
+}
+
 const tasks = ref<Task[]>([])
 
-const defaultFilterOptions = ['completed', 'incomplete', ...Object.values(Priority)]
+// const defaultFilterOptions = ['completed', 'incomplete', ...Object.values(Priority)]
 
-const filterValues = ref([...defaultFilterOptions])
+const filterValues = ref<FilterValues>({
+  completed: true,
+  incomplete: true,
+  Low: true,
+  Medium: true,
+  High: true
+})
 
 export default function useTask() {
   const isFilterValid = computed(() => {
-    const firstCheck = ['completed', 'incomplete']
-    if (firstCheck.every((check) => !filterValues.value.includes(check))) {
-      return false
-    }
-    const secondCheck = [...Object.values(Priority)]
-    if (secondCheck.every((check) => !filterValues.value.includes(check))) {
-      return false
-    }
+    const firstCheck = !filterValues.value.completed && !filterValues.value.incomplete
+    const secondCheck =
+      !filterValues.value.Low && !filterValues.value.Medium && !filterValues.value.High
 
-    return true
+    return firstCheck || secondCheck ? false : true
   })
 
-  function filterDoesNotInclude(value: string) {
-    return !filterValues.value.includes(value)
+  function isFilterSelected(filter: FilterTypes) {
+    return filterValues.value[filter]
   }
 
   const filteredTasks = computed(() => {
@@ -44,11 +55,11 @@ export default function useTask() {
 
     if (!isFilterValid.value) return []
 
-    if (filterDoesNotInclude('incomplete')) {
+    if (!isFilterSelected('incomplete')) {
       newTasks = tasks.value.filter((task) => task.completed)
     }
 
-    if (filterDoesNotInclude('completed')) {
+    if (!isFilterSelected('completed')) {
       newTasks = tasks.value.filter((task) => !task.completed)
     }
 
@@ -56,22 +67,15 @@ export default function useTask() {
       (newTasks = newTasks.filter((task) => task.priority != priority))
 
     Object.values(Priority).forEach((priority) => {
-      if (filterDoesNotInclude(priority)) {
+      if (!isFilterSelected(priority)) {
         filterByPriority(priority)
       }
     })
     return newTasks
   })
 
-  function setFilterOptions(option: string) {
-    const includesOption = filterValues.value.includes(option)
-
-    if (!includesOption) {
-      filterValues.value.push(option)
-      return
-    }
-
-    filterValues.value = filterValues.value.filter((string) => string != option)
+  function setFilterValues(values: FilterValues) {
+    filterValues.value = values
   }
 
   function createTask(description: Task['description'], priority: Task['priority']) {
@@ -142,10 +146,9 @@ export default function useTask() {
     sortTasks,
     toggleCompleted,
     updateTask,
-    setFilterOptions,
-    filteredTasks,
-    defaultFilterOptions,
     tasks,
-    filterValues
+    filterValues,
+    setFilterValues,
+    filteredTasks
   }
 }

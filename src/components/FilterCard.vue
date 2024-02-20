@@ -6,16 +6,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import CheckIcon from './Icons/CheckIcon.vue'
 
 const props = defineProps({
   filter: { type: String, required: true }
 })
 
+const emits = defineEmits(['click'])
+
 const selected = defineModel()
 
-const filterClasses = computed(() => (selected.value ? `${props.filter} unselected` : props.filter))
+const filterClasses = computed(() => (selected.value ? props.filter : `${props.filter} unselected`))
 
 function toggleSelected() {
   selected.value = !selected.value
@@ -23,6 +25,7 @@ function toggleSelected() {
 
 function handleClick() {
   toggleSelected()
+  emits('click')
 }
 </script>
 

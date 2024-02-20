@@ -1,5 +1,10 @@
 <template>
-  <Header @filter="handleFilterSelect" @sort="handleSortSelect" @menu="toggleMenu" :is-open="isMenuOpen" />
+  <Header
+    @filter="handleFilterSelect"
+    @sort="handleSortSelect"
+    @menu="toggleMenu"
+    :is-open="isMenuOpen"
+  />
 
   <form @submit.prevent="addTask" class="add-task-form">
     <input required type="text" v-model="addFormData.description" />
@@ -12,30 +17,20 @@
   </form>
 
   <div v-auto-animate class="list">
-    <div v-if="tasks.length == 0">
+    <div v-if="useTask().tasks.value.length == 0">
       <p><em>Start adding some tasks</em></p>
       <AddTasksIcon />
     </div>
 
-    <p v-else-if="filteredTasks.length == 0"><em>No results matching your filter</em></p>
+    <p v-else-if="useTask().filteredTasks.value.length == 0"><em>No results matching your filter</em></p>
     <ul v-else>
       <ListItem
-        :tasks="filteredTasks"
-        @toggle-completed="toggleCompleted"
-        @remove="removeTask"
+        :tasks="useTask().filteredTasks.value"
+        @toggle-completed="useTask().toggleCompleted"
+        @remove="useTask().removeTask"
         @edit="enterEditMode"
       ></ListItem>
     </ul>
-  </div>
-
-  <div class="checkbox-container">
-    <Checkbox
-      v-for="option in defaultFilterOptions"
-      :key="option"
-      :filter-option="option"
-      :checked="true"
-      @click="setFilterOptions(option)"
-    />
   </div>
 
   <div class="sort">
@@ -46,7 +41,12 @@
     </select>
   </div>
 
-  <FilterPopup @cancel="toggleFilterPopup" v-if="isFilterSelected"/>
+  <FilterPopup
+    :temp-filters="tempFilters"
+    @apply="applyFilter"
+    @cancel="cancelFilter"
+    v-if="isFilterSelected"
+  />
 
   <div v-if="editMode" class="edit-mode">
     <form @submit.prevent="updateAndExitEditMode">
@@ -69,7 +69,6 @@
 import useTask, { Priority, type Task } from '@/use/useTask'
 import { ref, watch } from 'vue'
 import ListItem from './components/ListItem.vue'
-import Checkbox from './components/Checkbox.vue'
 import AddTasksIcon from './components/Icons/AddTasksIcon.vue'
 import FilterPopup from './components/FilterPopup.vue'
 import Header from './components/Header.vue'
@@ -89,27 +88,16 @@ const sortOption = ref('default')
 const isMenuOpen = ref(false)
 const isFilterSelected = ref(false)
 const isSortSelected = ref(false)
+const tempFilters = ref({ ...useTask().filterValues.value })
 
-
-const {
-  createTask,
-  updateTask,
-  toggleCompleted,
-  sortTasks,
-  removeTask,
-  setFilterOptions,
-  filteredTasks,
-  tasks,
-  defaultFilterOptions
-} = useTask()
-
+function addTask() {
+  useTask().createTask(addFormData.value.description, addFormData.value.priority)
+  Object.assign(addFormData.value, { ...defaultFormData })
+  useTask().sortTasks(sortOption.value)
+}
 
 function toggleMenu() {
   isMenuOpen.value = !isMenuOpen.value
-}
-
-function toggleFilterPopup() {
-  isFilterSelected.value = !isFilterSelected.value
 }
 
 function handleFilterSelect() {
@@ -117,15 +105,23 @@ function handleFilterSelect() {
   isMenuOpen.value = false
 }
 
+function toggleFilterPopup() {
+  isFilterSelected.value = !isFilterSelected.value
+}
+
+function applyFilter() {
+  toggleFilterPopup()
+  useTask().setFilterValues({ ...tempFilters.value })
+}
+
+function cancelFilter() {
+  toggleFilterPopup()
+  tempFilters.value = { ...useTask().filterValues.value }
+}
+
 function handleSortSelect() {
   isSortSelected.value = true
   isMenuOpen.value = false
-}
-
-function addTask() {
-  createTask(addFormData.value.description, addFormData.value.priority)
-  Object.assign(addFormData.value, { ...defaultFormData })
-  sortTasks(sortOption.value)
 }
 
 function toggleEditMode() {
@@ -138,7 +134,7 @@ function enterEditMode(id: Task['id']) {
 }
 
 function setEditFormData(id: Task['id']) {
-  filteredTasks.value.filter((task) => {
+  useTask().filteredTasks.value.filter((task) => {
     if (task.id == id) {
       editFormData.value.description = task.description
       editFormData.value.priority = task.priority
@@ -147,13 +143,17 @@ function setEditFormData(id: Task['id']) {
 }
 
 function updateAndExitEditMode() {
-  updateTask(selectedId.value, editFormData.value.description, editFormData.value.priority)
+  useTask().updateTask(
+    selectedId.value,
+    editFormData.value.description,
+    editFormData.value.priority
+  )
   toggleEditMode()
-  sortTasks(sortOption.value)
+  useTask().sortTasks(sortOption.value)
 }
 
 watch(selectedId, setEditFormData)
-watch(sortOption, sortTasks)
+watch(sortOption, useTask().sortTasks)
 </script>
 
 <style scoped>
