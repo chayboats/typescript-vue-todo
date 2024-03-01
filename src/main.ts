@@ -12,8 +12,10 @@ import {
   faM,
   faH,
   faSquare,
-  faCheck
+  faCheck,
+  faChevronDown,
+  faChevronUp
 } from '@fortawesome/free-solid-svg-icons'
-library.add(faPenToSquare, faSliders, faL, faM, faH, faSquare, faCheck)
+library.add(faPenToSquare, faSliders, faL, faM, faH, faSquare, faCheck, faChevronDown, faChevronUp)
 
 createApp(App).component('font-awesome-icon', FontAwesomeIcon).use(autoAnimatePlugin).mount('#app')

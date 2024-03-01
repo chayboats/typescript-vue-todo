@@ -1,8 +1,10 @@
 <template>
   <div @click="$emit('click')" class="menu-item">
-    <div>
-      <span class="content">{{ item }}</span>
+    <div class="content">
+      <span>{{ item }}</span>
+      <component :is="icon" />
     </div>
+
     <hr v-if="!lastItem" />
   </div>
 </template>
@@ -10,7 +12,8 @@
 <script setup lang="ts">
 defineProps({
   lastItem: { type: Boolean, value: false },
-  item: { type: String, required: true }
+  item: { type: String, required: true },
+  icon: { type: Object || undefined, default: undefined }
 })
 
 defineEmits(['click'])
@@ -23,8 +26,11 @@ defineEmits(['click'])
 }
 .menu-item .content {
   text-transform: capitalize;
-  padding-left: 0.5rem;
+  padding: 0 0.5rem;
   transition: 300ms;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .menu-item :hover {

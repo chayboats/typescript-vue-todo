@@ -27,8 +27,6 @@ export interface FilterValues {
 
 const tasks = ref<Task[]>([])
 
-// const defaultFilterOptions = ['completed', 'incomplete', ...Object.values(Priority)]
-
 const filterValues = ref<FilterValues>({
   completed: true,
   incomplete: true,
