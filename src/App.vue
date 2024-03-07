@@ -43,24 +43,15 @@
     :temp-filters="tempFilters"
     @apply="applyFilter"
     @cancel="cancelFilter"
-    v-if="isFilterSelected"
+    :is-open="isFilterSelected"
   />
 
-  <div v-if="editMode" class="edit-mode">
-    <form @submit.prevent="updateAndExitEditMode">
-      <h2>Update Task</h2>
-      <input required type="text" v-model="editFormData.description" />
-      <select v-model="editFormData.priority">
-        <option :value="Priority.LOW">{{ Priority.LOW }}</option>
-        <option :value="Priority.MEDIUM">{{ Priority.MEDIUM }}</option>
-        <option :value="Priority.HIGH">{{ Priority.HIGH }}</option>
-      </select>
-      <div class="buttons">
-        <button type="button" @click="toggleEditMode">Cancel</button>
-        <button type="submit">Update</button>
-      </div>
-    </form>
-  </div>
+  <EditPopup
+    :is-open="editMode"
+    :data="editFormData"
+    @cancel="toggleEditMode"
+    @submit="updateAndExitEditMode"
+  />
 </template>
 
 <script setup lang="ts">
@@ -70,6 +61,7 @@ import ListItem from './components/ListItem.vue'
 import AddTasksIcon from './components/Icons/AddTasksIcon.vue'
 import FilterPopup from './components/FilterPopup.vue'
 import Header from './components/Header.vue'
+import EditPopup from './components/EditPopup.vue'
 
 interface FormData {
   description: string
@@ -162,84 +154,10 @@ ul {
   column-span: 1 2;
 }
 
-.edit-mode {
-  background-color: rgba(0, 14, 61, 0.417);
-  backdrop-filter: blur(10px);
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.edit-mode form {
-  border: 1px solid white;
-  padding: 3rem;
-  background-color: rgb(0, 10, 42);
-  border-radius: 0.25rem;
-}
-.edit-mode .buttons {
-  display: flex;
-  justify-content: center;
-  gap: 0.5rem;
-  padding-top: 1rem;
-}
-.sort {
-  grid-column-start: span 2;
-  display: flex;
-  justify-content: flex-end;
-  padding: 1rem 0 3rem 0;
-}
-
-button {
-  padding: 0.25rem 0.7rem;
-}
-
-select {
-  padding: 0.5rem 0.7rem;
-}
-
-button:hover,
-select:hover {
-  background-color: #48acac;
-  color: white;
-  cursor: pointer;
-}
-
-button,
-select {
-  background-color: rgb(230, 230, 230);
-
-  border: none;
-  border-radius: 0.25rem;
-  font-family:
-    Inter,
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    Oxygen,
-    Ubuntu,
-    Cantarell,
-    'Fira Sans',
-    'Droid Sans',
-    'Helvetica Neue',
-    sans-serif;
-  background-color: rgb(239, 239, 239);
-  transition: 300ms;
-}
-
-.checkbox-container {
-  display: flex;
-  flex-direction: column;
-}
-
 .add-task-form {
   display: grid;
-  grid-template-columns: 1fr auto auto;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
 }
 
 .add-task-form input {
@@ -248,5 +166,16 @@ select {
   border-radius: 3px;
   box-shadow: 0 0 20px 0 #7d959044;
   background-color: #f1f1f1;
+  grid-column: 1 / span 2;
+}
+
+@media (min-width: 768px) {
+  .add-task-form {
+    grid-template-columns: 1fr auto auto;
+  }
+
+  .add-task-form input {
+    grid-column: unset;
+  }
 }
 </style>

@@ -7,3 +7,46 @@
   font-weight: normal;
 }
 
+button {
+  padding: 0.25rem 0.7rem;
+}
+
+select {
+  padding: 0.5rem 0.7rem;
+}
+
+button:hover,
+select:hover {
+  background-color: #48acac;
+  color: white;
+  cursor: pointer;
+}
+
+button,
+select {
+  border: none;
+  border-radius: 0.25rem;
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Fira Sans',
+    'Droid Sans',
+    'Helvetica Neue',
+    sans-serif;
+  background-color: rgb(75, 145, 145);
+  color: white;
+  transition: 300ms;
+}
+
+#app,
+button,
+select,
+input {
+  font-size: 1.2rem;
+}

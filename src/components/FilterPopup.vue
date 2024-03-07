@@ -1,6 +1,6 @@
 <template>
-  <div class="backdrop">
-    <div class="filter-container">
+  <Popup :is-open="isOpen">
+    <div class="container">
       <div class="filter-header">
         <h2>Filters</h2>
         <span style="display: flex; gap: 1rem">
@@ -17,43 +17,32 @@
         />
       </div>
     </div>
-  </div>
+  </Popup>
 </template>
 
 <script setup lang="ts">
 import FilterCard from './FilterCard.vue'
+import Popup from './Popup.vue'
 
 defineEmits(['cancel', 'apply'])
 
 defineProps({
-  tempFilters: { type: Object, required: true }
+  tempFilters: { type: Object, required: true },
+  isOpen: { type: Boolean, required: true }
 })
 </script>
 
 <style scoped>
-.backdrop {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  background: linear-gradient(#f6f6f6, rgb(64, 155, 155));
-  position: absolute;
-  top: 0;
-  left: 0;
+.container {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  padding: 3rem;
   height: 100%;
 }
-
-.filter-container {
-  display: flex;
-  flex-direction: column;
-  padding: 2rem;
-  height: 100%;
-}
-
-.filter-container .filters {
+.filters {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  height: 100%;
 }
 
 .filter-header {
@@ -100,6 +89,6 @@ button {
 .cancel:hover {
   border-color: #48acac;
   cursor: pointer;
-  color: #48acac;
+  color: white;
 }
 </style>

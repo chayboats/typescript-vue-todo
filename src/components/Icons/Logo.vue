@@ -4,7 +4,7 @@
 
 <style scoped>
 .logo-img {
-  font-size: 1.5rem;
+  font-size: 3rem;
   color: #48acac;
 }
 </style>

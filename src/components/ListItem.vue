@@ -66,7 +66,7 @@ li span:nth-of-type(1):hover {
   border: 2px solid;
   padding: 2px;
   aspect-ratio: 1/1;
-  font-size: 0.75rem;
+  font-size: 1.2rem;
 }
 .priority-content {
   display: flex;

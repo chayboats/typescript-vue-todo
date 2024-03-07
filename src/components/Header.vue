@@ -1,5 +1,5 @@
 <template>
-  <header>
+  <header style="padding: 1rem 0">
     <div class="app-logo">
       <Logo />
       <span class="logo-title">Todo App</span>
@@ -73,7 +73,7 @@ header {
 
 .menu {
   color: #76a5a581;
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   transition: 300ms;
 }
 .menu:hover {
