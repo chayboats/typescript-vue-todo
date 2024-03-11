@@ -23,7 +23,7 @@
   <div v-auto-animate class="list">
     <div v-if="task.tasks.value.length == 0">
       <p><em>Start adding some tasks</em></p>
-      <AddTasksIcon />
+      <AddTasksImage />
     </div>
 
     <p v-else-if="task.filteredTasks.value.length == 0">
@@ -58,10 +58,10 @@
 import useTask, { Priority, type Task } from '@/use/useTask'
 import { ref, watch } from 'vue'
 import ListItem from './components/ListItem.vue'
-import AddTasksIcon from './components/Icons/AddTasksIcon.vue'
-import FilterPopup from './components/FilterPopup.vue'
-import Header from './components/Header.vue'
-import EditPopup from './components/EditPopup.vue'
+import AddTasksImage from './components/AddTasksImage.vue'
+import FilterPopup from './components/Popups/Filter/FilterPopup.vue'
+import Header from './components/Header/Header.vue'
+import EditPopup from './components/Popups/Edit/EditPopup.vue'
 
 interface FormData {
   description: string
@@ -178,5 +178,4 @@ ul {
     grid-column: unset;
   }
 }
-
 </style>

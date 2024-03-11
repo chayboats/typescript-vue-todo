@@ -22,7 +22,7 @@
 
 <script setup lang="ts">
 import FilterCard from './FilterCard.vue'
-import Popup from './Popup.vue'
+import Popup from '../Popup.vue'
 
 defineEmits(['cancel', 'apply'])
 

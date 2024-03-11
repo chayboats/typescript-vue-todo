@@ -21,7 +21,7 @@
 </template>
 
 <script setup lang="ts">
-import Popup from './Popup.vue'
+import Popup from '../Popup.vue';
 import { Priority } from '@/use/useTask'
 
 defineEmits(['submit', 'cancel'])

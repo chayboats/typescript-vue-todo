@@ -7,7 +7,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import CheckIcon from './Icons/CheckIcon.vue'
+import CheckIcon from '@/components/Icons/CheckIcon.vue';
 
 const props = defineProps({
   filter: { type: String, required: true }
