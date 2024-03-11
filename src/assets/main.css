@@ -7,21 +7,6 @@
   font-weight: normal;
 }
 
-button {
-  padding: 0.25rem 0.7rem;
-}
-
-select {
-  padding: 0.5rem 0.7rem;
-}
-
-button:hover,
-select:hover {
-  background-color: #48acac;
-  color: white;
-  cursor: pointer;
-}
-
 button,
 select {
   border: none;
@@ -39,9 +24,28 @@ select {
     'Droid Sans',
     'Helvetica Neue',
     sans-serif;
+  transition: 300ms;
+  box-shadow: 0 0 20px 0 #7d959044;
+}
+
+button:hover, select:hover {
+  background-color: rgb(43, 43, 43);
+  color: rgb(75, 145, 145);
+  cursor: pointer;
+}
+
+button {
+  padding: 0.25rem 0.7rem;
   background-color: rgb(75, 145, 145);
   color: white;
-  transition: 300ms;
+  box-shadow: 0 0 20px 0 #00000044;
+}
+
+select {
+  padding: 0.5rem 0.7rem;
+  border-right: 1rem solid transparent;
+  background-color: rgb(148, 199, 199);
+  color: rgb(61, 61, 61);
 }
 
 #app,
@@ -49,4 +53,8 @@ button,
 select,
 input {
   font-size: 1.2rem;
+}
+
+h2 {
+  font-family: 'Nunito', sans-serif
 }

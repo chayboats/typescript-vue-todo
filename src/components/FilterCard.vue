@@ -1,6 +1,6 @@
 <template>
   <div v-auto-animate @click="handleClick" class="filter" :class="filterClasses">
-    <h2>{{ filter }}</h2>
+    <span class="category">{{ filter }}</span>
     <CheckIcon v-if="selected" />
   </div>
 </template>
@@ -48,9 +48,11 @@ function handleClick() {
   color: rgba(255, 255, 255, 0.326);
 }
 
-h2 {
+.category {
   text-transform: capitalize;
   margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
 }
 .completed {
   background-color: rgb(32, 95, 95);

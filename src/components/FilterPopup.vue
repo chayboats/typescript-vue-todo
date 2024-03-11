@@ -4,8 +4,8 @@
       <div class="filter-header">
         <h2>Filters</h2>
         <span style="display: flex; gap: 1rem">
-          <button @click="$emit('apply')" class="apply">Apply Filters</button>
           <button @click="$emit('cancel')" class="cancel">Cancel</button>
+          <button @click="$emit('apply')" class="apply">Apply Filters</button>
         </span>
       </div>
       <div class="filters">
@@ -51,44 +51,14 @@ defineProps({
   justify-content: space-between;
   color: rgb(56, 56, 56);
 }
-
-button {
-  padding: 0.25rem 0.7rem;
-  border-radius: 0.25rem;
-  font-family:
-    Inter,
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    Oxygen,
-    Ubuntu,
-    Cantarell,
-    'Fira Sans',
-    'Droid Sans',
-    'Helvetica Neue',
-    sans-serif;
-  transition: 300ms;
-}
-
-.apply {
-  color: white;
-  background-color: rgb(56, 56, 56);
-  border: none;
-}
-.apply:hover {
-  background-color: #48acac;
-  color: white;
-  cursor: pointer;
-}
-
 .cancel {
-  border: 1px solid rgb(56, 56, 56);
+  padding: 0.5rem 0.7rem;
+  background-color: #f1f1f1;
+  color: rgb(75, 145, 145);
 }
-
 .cancel:hover {
-  border-color: #48acac;
+  background-color: rgb(43, 43, 43);
+  color: rgb(75, 145, 145);
   cursor: pointer;
-  color: white;
 }
 </style>

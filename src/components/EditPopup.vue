@@ -2,10 +2,10 @@
   <Popup :is-open="isOpen">
     <form class="edit-form" @submit.prevent="$emit('submit')">
       <div class="header">
-        <h2>Update Task</h2>
+        <h2>Edit Task</h2>
         <span style="display: flex; gap: 1rem">
-          <button type="submit" class="update">Update</button>
           <button type="button" @click="$emit('cancel')" class="cancel">Cancel</button>
+          <button type="submit" class="update">Update</button>
         </span>
       </div>
       <div class="content">
@@ -49,24 +49,14 @@ defineProps({
   grid-template-columns: 1fr auto;
   gap: 1rem;
 }
-.edit-form .update {
-  color: white;
-  background-color: rgb(56, 56, 56);
-  border: none;
+.cancel {
+  padding: 0.5rem 0.7rem;
+  background-color: #f1f1f1;
+  color: rgb(75, 145, 145);
 }
-.edit-form .update:hover {
-  background-color: #48acac;
-  color: white;
+.cancel:hover {
+  background-color: rgb(43, 43, 43);
+  color: rgb(75, 145, 145);
   cursor: pointer;
-}
-
-.edit-form .cancel {
-  border: 1px solid rgb(56, 56, 56);
-}
-
-.edit-form .cancel:hover {
-  border-color: #48acac;
-  cursor: pointer;
-  color: white;
 }
 </style>
