@@ -2,6 +2,15 @@
 
 A note-taking app built with TypeScript and Vue, allowing users to create, prioritize, edit, delete, and manage tasks with various filter and sort functionalities.
 
+<img width="210" alt="Start adding some tasks" src="https://github.com/user-attachments/assets/5d0f1233-8389-4ec2-b9ee-5afa868f3697">
+<img width="210" alt="Pasted Graphic 1" src="https://github.com/user-attachments/assets/e373f52e-7cc3-4b50-bfd0-968aa177efce">
+<img width="210" alt="Low To High" src="https://github.com/user-attachments/assets/33882c2f-b1e3-4e64-8914-5cb824c81573">
+<img width="210" alt="Pasted Graphic 3" src="https://github.com/user-attachments/assets/83ec1bb9-b744-4b89-a073-80de1f15a74e">
+<img width="210" alt="image" src="https://github.com/user-attachments/assets/8c8290b5-9355-4c47-8a53-85bfaba7520c">
+<img width="210" alt="image" src="https://github.com/user-attachments/assets/0b237864-ebbb-449b-97d6-618e9ca6a359">
+<img width="210" alt="Filters" src="https://github.com/user-attachments/assets/d6213f76-6d3b-4ec3-b9c0-b7da42ba7266">
+<img width="210" alt="Pasted Graphic 5" src="https://github.com/user-attachments/assets/739f5072-82db-4db5-822b-b07b09bab1b8">
+
 ## Table of Contents
 
 1. [Features](#features)
